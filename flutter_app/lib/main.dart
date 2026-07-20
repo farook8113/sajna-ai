@@ -187,6 +187,16 @@ class CalculatorsScreen extends StatelessWidget {
 
 class DefectsScreen extends StatelessWidget {
   const DefectsScreen({super.key});
+
   @override
-  Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('Cabin Defect Log')), body: const Center(child: Text('Report Defects')));
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Cabin Defect Log'),
+      ),
+      body: const Center(
+        child: Text('Report Defects'),
+      ),
+    );
+  }
 }
