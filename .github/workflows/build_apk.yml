@@ -26,14 +26,14 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
-        working-directory: sajna_ai/flutter_app
+        working-directory: flutter_app
 
       - name: Build Production APK
         run: flutter build apk --release --no-pub
-        working-directory: sajna_ai/flutter_app
+        working-directory: flutter_app
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v3
         with:
           name: Sajna-AI-Android-APK
-          path: sajna_ai/flutter_app/build/app/outputs/flutter-apk/app-release.apk
+          path: flutter_app/build/app/outputs/flutter-apk/app-release.apk
