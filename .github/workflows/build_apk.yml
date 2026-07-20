@@ -34,23 +34,9 @@ jobs:
         run: |
           mkdir -p ~/.gradle/init.d
           cat << 'EOF' > ~/.gradle/init.d/init.gradle
-          allprojects {
-              buildscript {
-                  repositories {
-                      google()
-                      mavenCentral()
-                      metaClass.jcenter = {
-                          mavenCentral()
-                      }
-                  }
-              }
-              repositories {
-                  google()
-                  mavenCentral()
-                  metaClass.jcenter = {
-                      mavenCentral()
-                  }
-              }
+          // Inject jcenter() method globally on the RepositoryHandler class to bypass deprecation errors
+          org.gradle.api.artifacts.dsl.RepositoryHandler.metaClass.jcenter = { ->
+              delegate.mavenCentral()
           }
           EOF
 
