@@ -30,8 +30,29 @@ jobs:
           flutter create --platforms=android .
         working-directory: flutter_app
 
-      - name: Patch Gradle references (jcenter bypass)
-        run: python patch_gradle.py
+      - name: Create Gradle init script for jcenter bypass
+        run: |
+          mkdir -p ~/.gradle/init.d
+          cat << 'EOF' > ~/.gradle/init.d/init.gradle
+          allprojects {
+              buildscript {
+                  repositories {
+                      google()
+                      mavenCentral()
+                      metaClass.jcenter = {
+                          mavenCentral()
+                      }
+                  }
+              }
+              repositories {
+                  google()
+                  mavenCentral()
+                  metaClass.jcenter = {
+                      mavenCentral()
+                  }
+              }
+          }
+          EOF
 
       - name: Apply Premium App Icon
         run: |
