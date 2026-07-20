@@ -114,7 +114,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
     // Auto-grant permission requests (such as audio capture) on localhost origin
     if (_controller.platform is AndroidWebViewController) {
       (_controller.platform as AndroidWebViewController).setOnPlatformPermissionRequest(
-        (WebViewPermissionRequest request) {
+        (request) {
           request.grant();
         },
       );
