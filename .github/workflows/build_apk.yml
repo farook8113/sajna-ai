@@ -24,6 +24,10 @@ jobs:
           channel: 'stable'
           cache: true
 
+      - name: Recreate Android platform files
+        run: flutter create --platforms=android .
+        working-directory: flutter_app
+
       - name: Install dependencies
         run: flutter pub get
         working-directory: flutter_app
