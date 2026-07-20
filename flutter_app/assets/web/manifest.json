@@ -1,0 +1,22 @@
+{
+  "name": "SAJNA AI",
+  "short_name": "SAJNA AI",
+  "description": "SAJNA AI - Offline Cabin Crew Assistant",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#121214",
+  "theme_color": "#D20A11",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

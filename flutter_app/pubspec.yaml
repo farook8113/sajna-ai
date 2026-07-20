@@ -10,9 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^2.3.6
-  hive_flutter: ^1.1.0
-  intl: ^0.18.1
+  webview_flutter: ^4.7.0
   cupertino_icons: ^1.0.5
 
 dev_dependencies:
@@ -21,3 +19,11 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/web/
+    - assets/web/index.html
+    - assets/web/app.css
+    - assets/web/app.js
+    - assets/web/manifest.json
+    - assets/web/icon-192.png
+    - assets/web/icon-512.png
