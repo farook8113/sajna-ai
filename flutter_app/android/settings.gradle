@@ -1,0 +1,26 @@
+pluginManagement {
+    def flutterSdkPath
+    def propertiesFile = new File(settingsDir, "local.properties")
+    if (propertiesFile.exists()) {
+        def properties = new Properties()
+        propertiesFile.withReader("UTF-8") { reader -> properties.load(reader) }
+        flutterSdkPath = properties.getProperty("flutter.sdk")
+    }
+
+    settings.ext.flutterSdkPath = flutterSdkPath
+
+    plugins {
+        id "dev.flutter.flutter-plugin-loader" version "1.0.0"
+    }
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+plugins {
+    id "dev.flutter.flutter-plugin-loader" version "1.0.0"
+}
+
+include ":app"
