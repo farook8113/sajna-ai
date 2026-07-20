@@ -54,6 +54,9 @@ jobs:
           }
           EOF
 
+      - name: Patch Android Manifest Permissions
+        run: python patch_android.py
+
       - name: Apply Premium App Icon
         run: |
           cp web_simulator/icon-512.png flutter_app/android/app/src/main/res/mipmap-mdpi/ic_launcher.png

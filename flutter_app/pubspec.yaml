@@ -18,6 +18,7 @@ dependencies:
   permission_handler: ^11.3.1
   intl: ^0.19.0
   cupertino_icons: ^1.0.5
+  webview_flutter: ^4.4.2
 
 dev_dependencies:
   flutter_test:
@@ -25,3 +26,12 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/web/
+    - assets/web/app.css
+    - assets/web/app.js
+    - assets/web/index.html
+    - assets/web/manifest.json
+    - assets/web/icon-192.png
+    - assets/web/icon-512.png
+    - assets/web/material_symbols.woff2

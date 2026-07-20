@@ -1,3 +1,11 @@
+/* Local Offline Font Loading for Material Symbols Rounded */
+@font-face {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  font-weight: 100 700;
+  src: url('material_symbols.woff2') format('woff2');
+}
+
 /* ==========================================
    MATERIAL DESIGN 3 STYLING DESIGN SYSTEM
    FOR SAJNA AI WEB SIMULATOR & HYBRID SHELL
@@ -221,8 +229,8 @@ a {
 }
 
 .top-bar {
-  height: 72px;
-  padding: 0 32px;
+  height: calc(72px + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) 32px 0 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1825,8 +1833,8 @@ body.light-mode .nav-btn.active span:first-child {
   }
 
   .top-bar {
-    height: 60px;
-    padding: 0 16px;
+    height: calc(60px + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) 16px 0 16px;
   }
 
   .header-search {
