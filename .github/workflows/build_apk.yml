@@ -30,6 +30,9 @@ jobs:
           flutter create --platforms=android .
         working-directory: flutter_app
 
+      - name: Patch Gradle references (jcenter bypass)
+        run: python patch_gradle.py
+
       - name: Apply Premium App Icon
         run: |
           cp web_simulator/icon-512.png flutter_app/android/app/src/main/res/mipmap-mdpi/ic_launcher.png
