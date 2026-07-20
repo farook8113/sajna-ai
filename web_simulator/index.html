@@ -139,6 +139,17 @@
             </div>
           </div>
 
+          <!-- Connectivity Status Card -->
+          <div class="card connectivity-card" id="dashboard-connectivity-card">
+            <div class="connectivity-card-header">
+              <span class="material-symbols-rounded status-icon text-crimson" id="dash-conn-icon">wifi_off</span>
+              <div class="connectivity-info">
+                <span class="conn-status-title" id="dash-conn-text">🔴 Offline Mode</span>
+                <span class="conn-status-subtitle" id="dash-conn-sub">Using Local AI & Database</span>
+              </div>
+            </div>
+          </div>
+
           <!-- Quick Actions Grid -->
           <h3 class="section-title">Quick Actions</h3>
           <div class="quick-actions-grid">
@@ -683,6 +694,19 @@
             </button>
           </div>
 
+          <!-- Settings Preferences Card -->
+          <div class="card settings-preferences-card" style="margin-bottom:20px;">
+            <h3>AI Operational Preferences</h3>
+            <div class="form-group full-width" style="margin-top: 10px;">
+              <label for="ai-mode-select">AI Mode Selection</label>
+              <select id="ai-mode-select" class="form-control" style="background-color: var(--surface-color-var); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; width: 100%; color: var(--text-pri); margin-top: 6px;">
+                <option value="auto">Auto (Recommended - Sync when online)</option>
+                <option value="offline">Offline Only (Strict local safety database)</option>
+                <option value="online">Online Preferred (Always fetch online API if connected)</option>
+              </select>
+            </div>
+          </div>
+
           <!-- Settings Sub-Tab A: Defect Logs -->
           <div id="subtab-defects-config" class="subtab-settings-content active">
             <div class="defects-layout">
@@ -961,6 +985,12 @@
       </button>
     </nav>
 
+  </div>
+
+  <!-- Sync Toast Notification -->
+  <div class="toast-notification" id="sync-toast">
+    <span class="material-symbols-rounded">check_circle</span>
+    <span class="toast-message" id="sync-toast-message">✓ Data synchronized successfully.</span>
   </div>
 
   <script src="app.js"></script>

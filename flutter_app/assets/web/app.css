@@ -1892,6 +1892,86 @@ body.light-mode .nav-btn.active span:first-child {
   }
 }
 
+/* Toast Notification Alert Banner */
+.toast-notification {
+  position: fixed;
+  bottom: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--accent-green);
+  color: #FFFFFF;
+  padding: 14px 28px;
+  border-radius: var(--radius-round);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  font-size: 13.5px;
+  box-shadow: var(--shadow-3);
+  z-index: 9999;
+  transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.toast-notification.show {
+  bottom: 80px;
+}
+
+.toast-notification span:first-child {
+  font-size: 20px;
+}
+
+/* Dashboard Connectivity Status Card */
+.connectivity-card {
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  border-left: 5px solid var(--border-color);
+  transition: var(--transition-smooth);
+}
+
+.connectivity-card.online {
+  border-left-color: var(--accent-green);
+  background-color: rgba(52, 199, 89, 0.04);
+}
+
+.connectivity-card.offline {
+  border-left-color: var(--primary-red);
+  background-color: rgba(210, 10, 17, 0.04);
+}
+
+.connectivity-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.status-icon {
+  font-size: 28px;
+}
+
+.text-green {
+  color: var(--accent-green);
+}
+
+.text-crimson {
+  color: var(--primary-red);
+}
+
+.connectivity-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.conn-status-title {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.conn-status-subtitle {
+  font-size: 11px;
+  color: var(--text-ter);
+}
+
 /* Print Mode Overlay to enforce pixel perfect physical look */
 @media print {
   body * {
