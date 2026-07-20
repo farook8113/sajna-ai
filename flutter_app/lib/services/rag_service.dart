@@ -27,6 +27,19 @@ class RAGService {
     "tell", "rules", "rule", "should", "must", "can"
   };
 
+  // Synonyms and Abbreviations Mapping for Crew terms
+  static final Map<String, List<String>> _synonyms = {
+    "prm": ["mobility", "disability", "wheelchair", "frail", "special category"],
+    "abp": ["fit", "strong", "assist", "evacuation", "able bodied"],
+    "medif": ["medical form", "fit to fly", "sick passenger", "doctor approval"],
+    "dgr": ["dangerous goods", "spill", "hazard", "chemical", "lithium"],
+    "fire": ["smoke", "extinguisher", "halon", "burning", "pbe"],
+    "exit": ["door", "overwing", "row 17", "row 27", "slide"],
+    "arm": ["arming", "girt bar", "slide armed", "cross check"],
+    "disarm": ["disarming", "girt bar", "slide disarmed", "cross check"],
+    "secure": ["fasten", "locked", "latched", "stowed", "carts", "seatbelt"],
+  };
+
   static final List<ManualSection> _database = [
     ManualSection(
       category: "door_arming",
@@ -74,7 +87,7 @@ class RAGService {
           "Before take-off and landing, the cabin secure check should be given to the Captain when the checks are completed.\n\n"
           "2.12.1 — Cabin Secure Check Areas:\n"
           "- All passengers including infants are seated with seat belts fastened.\n"
-          "- Seatbacks are fully upright, window shades are fully open.\n"
+          "- Seatbacks are fully upright, window shades are open (at least 50% open, exit rows fully open).\n"
           "- Tray tables are closed, locked, and footrests are stowed.\n"
           "- Carts are latched, brakes applied and secured in galleys.\n"
           "- All galley container doors are locked and latched.\n"
@@ -212,59 +225,61 @@ class RAGService {
     )
   ];
 
-  static Map<String, dynamic> query(String queryText) {
+  static List<ManualSection> get database => _database;
+
+  static Map<String, dynamic> query(String queryText, {bool forceOnline = false}) {
     final cleanQuery = queryText.toLowerCase().trim();
+    
+    // 1. Synonym / Abbreviation Expansion
+    final expandedTerms = <String>[cleanQuery];
+    _synonyms.forEach((abbrev, synonymsList) {
+      if (cleanQuery.contains(abbrev)) {
+        expandedTerms.addAll(synonymsList);
+      }
+    });
+
     ManualSection? bestMatch;
     double maxScore = 0;
-
-    final keyPhrases = {
-      "door arming": ["ARMING", "DOOR", "CROSS CHECK", "ARM"],
-      "door disarming": ["DISARMING", "DOOR", "CROSS CHECK", "DISARM"],
-      "cabin secure": ["SECURE", "CABIN", "GALLEYS", "CARTS", "SEAT BELT", "REFUSE", "FASTEN", "NON-COMPLIANCE", "SEATBELT"],
-      "infant": ["INFANT", "CHILD", "certified chair", "LOOP BELT"],
-      "wheelchair": ["WHEELCHAIR", "DISABILITY", "PRM", "frail"],
-      "dangerous goods": ["DANGEROUS GOODS", "DGR", "PROHIBITED", "SPILL"],
-      "medical emergency": ["MEDICAL", "FIRST AID", "DOCTOR", "ABC"],
-      "fire procedure": ["FIRE", "HALON", "OVEN", "LAVATORY", "PBE", "LITHIUM"],
-      "refusal": ["REFUSAL", "PREGNANT", "HEART ATTACK", "MEDIF"],
-      "evacuation": ["EVACUATION", "NITS", "COMMANDS", "BRACE"],
-      "survival": ["SURVIVAL", "DITCHING", "SEA", "RAFT", "HYPOTHERMIA"],
-      "a321 neo": ["NEO", "ACF", "DOORS", "EXIT ROWS"],
-      "report log": ["APPENDICES", "IQSMS", "DEFECT", "LOG SHEET"]
-    };
 
     final words = cleanQuery
         .split(RegExp(r'[^a-zA-Z0-9]+'))
         .where((w) => w.length > 2 && !_stopWords.contains(w))
         .toList();
 
+    // 2. Score calculations based on custom weightings
     for (var doc in _database) {
       double score = 0;
       final docTextUpper = doc.text.toUpperCase();
       final docSectionUpper = doc.section.toUpperCase();
 
-      for (var entry in keyPhrases.entries) {
-        if (cleanQuery.contains(entry.key)) {
-          if (doc.category == entry.key.replaceAll(" ", "_") || 
-              (entry.key == "refusal" && doc.category == "refusal_of_embarkation")) {
-            score += 15.0;
-          }
+      // Check category match
+      for (var term in expandedTerms) {
+        if (doc.category == term.replaceAll(" ", "_") || 
+            (term.contains("refusal") && doc.category == "refusal_of_embarkation")) {
+          score += 15.0;
         }
       }
 
+      // Check tags matches
       for (var tag in doc.tags) {
         if (cleanQuery.contains(tag.toLowerCase())) {
           score += 8.0;
         }
+        for (var term in expandedTerms) {
+          if (term.contains(tag.toLowerCase())) {
+            score += 4.0;
+          }
+        }
       }
 
+      // TF-IDF Term match density
       for (var word in words) {
         final regex = RegExp(r'\b' + RegExp.escape(word) + r'\b', caseSensitive: false);
         final matches = regex.allMatches(doc.text);
-        score += matches.length * 1.5;
+        score += matches.length * 2.0;
 
         if (docSectionUpper.contains(word.toUpperCase())) {
-          score += 5.0;
+          score += 6.0;
         }
       }
 
@@ -274,30 +289,49 @@ class RAGService {
       }
     }
 
-    const threshold = 3.5;
-    if (maxScore >= threshold && bestMatch != null) {
+    // 3. Confidence assessment thresholds
+    const highThreshold = 18.0;
+    const medThreshold = 8.0;
+    const lowThreshold = 3.5;
+    
+    String confidence = 'None';
+    if (maxScore >= highThreshold) {
+      confidence = 'High';
+    } else if (maxScore >= medThreshold) {
+      confidence = 'Medium';
+    } else if (maxScore >= lowThreshold) {
+      confidence = 'Low';
+    }
+
+    if (confidence != 'None' && bestMatch != null) {
+      String answerPrefix = "";
+      if (forceOnline) {
+        // Mocking Cloud LLM Grounded answer format
+        answerPrefix = "[Grounded Cloud AI] Based on Air Arabia Cabin Safety Manual, ";
+      } else {
+        answerPrefix = "According to Air Arabia CSPM ${bestMatch.chapter}, Section ${bestMatch.section} (Page ${bestMatch.page}):\n\n";
+      }
+
       return {
-        'answer': "According to Air Arabia CSPM ${bestMatch.chapter}, Section ${bestMatch.section} (Page ${bestMatch.page}):\n\n${bestMatch.text}",
+        'answer': "$answerPrefix${bestMatch.text}",
         'page': bestMatch.page,
         'section': bestMatch.section,
         'chapter': bestMatch.chapter,
+        'excerpt': bestMatch.text,
+        'confidence': confidence,
+        'score': maxScore,
+        'found': true,
       };
     } else {
-      for (var doc in _database) {
-        if (words.any((w) => doc.chapter.toLowerCase().contains(w) || doc.section.toLowerCase().contains(w))) {
-          return {
-            'answer': "According to Air Arabia CSPM ${doc.chapter}, Section ${doc.section} (Page ${doc.page}):\n\n${doc.text}",
-            'page': doc.page,
-            'section': doc.section,
-            'chapter': doc.chapter,
-          };
-        }
-      }
       return {
-        'answer': "No relevant safety information was found in the offline safety manual.\n\nPlease narrow your query by including terms like 'door arming', 'basic fire drill', 'medif', 'infants', 'ditching survival', 'A321 Neo ACF doors', or 'safety reports'.",
+        'answer': "This information was not found in the available manuals.\n\n*Please broaden your query. You can ask about door arming, emergency checklists, passenger seatbelt refusal, PRM seating, child chairs, or fire drills.*",
         'page': null,
         'section': null,
         'chapter': null,
+        'excerpt': null,
+        'confidence': 'None',
+        'score': maxScore,
+        'found': false,
       };
     }
   }
