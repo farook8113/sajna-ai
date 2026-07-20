@@ -83,9 +83,7 @@ class DashboardView extends ConsumerWidget {
       child: Column(
         children: [
           Row(
-            justifyAxisAlignment: MainState.between != null
-                ? MainAxisAlignment.spaceBetween
-                : MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.between,
             children: [
               Row(
                 children: [

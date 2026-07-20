@@ -25,7 +25,7 @@ class SajnaTheme {
         outline: borderDark,
       ),
       scaffoldBackgroundColor: bgDark,
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: surfaceDark,
         elevation: 1,
         shape: RoundedRectangleBorder(
@@ -61,7 +61,7 @@ class SajnaTheme {
         outline: const Color(0xFFE0E2E7),
       ),
       scaffoldBackgroundColor: const Color(0xFFF4F5F7),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: Colors.white,
         elevation: 1,
         shape: RoundedRectangleBorder(

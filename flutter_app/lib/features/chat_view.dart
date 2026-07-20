@@ -277,7 +277,9 @@ class _ChatViewState extends ConsumerState<ChatView> {
         crossAxisAlignment: align,
         children: [
           Container(
-            maxWidth: MediaQuery.of(context).size.width * 0.75,
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.75,
+            ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: bubbleColor,
