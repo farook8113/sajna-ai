@@ -3,911 +3,964 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SAJNA AI - Offline-First Cabin Crew Assistant</title>
-  <!-- Material Symbols and Fonts -->
+  <title>SAJNA AI - Offline-First EFB Assistant</title>
+  
+  <!-- Material 3 Typography & Symbols CDN -->
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  
   <link rel="stylesheet" href="app.css">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#D20A11">
   <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body class="dark-mode">
+  
   <div class="app-container">
     
-    <!-- Sidebar Navigation -->
+    <!-- Desktop/Tablet Sidebar Navigation (Hidden on Mobile) -->
     <aside class="sidebar">
       <div class="sidebar-brand">
         <span class="material-symbols-rounded brand-icon">flight_takeoff</span>
         <div class="brand-text">
           <h1>SAJNA AI</h1>
-          <p>Air Arabia Cabin Assistant</p>
+          <p>Air Arabia EFB Shell</p>
         </div>
       </div>
       
       <nav class="sidebar-menu">
-        <a href="#dashboard" class="menu-item active" data-view="dashboard">
+        <a href="#" class="menu-item active" data-view="dashboard">
           <span class="material-symbols-rounded">dashboard</span>
           <span>Dashboard</span>
         </a>
-        <a href="#report-generator" class="menu-item" data-view="report-generator">
-          <span class="material-symbols-rounded">edit_document</span>
-          <span>Flight Report</span>
+        <a href="#" class="menu-item" data-view="report">
+          <span class="material-symbols-rounded">flight_takeoff</span>
+          <span>Flights</span>
         </a>
-        <a href="#log-sheet" class="menu-item" data-view="log-sheet">
-          <span class="material-symbols-rounded">description</span>
-          <span>Flight Log Sheet</span>
-        </a>
-        <a href="#ai-chat" class="menu-item" data-view="ai-chat">
+        <a href="#" class="menu-item" data-view="chat">
           <span class="material-symbols-rounded">chat_bubble</span>
-          <span>SAJNA AI Chat</span>
+          <span>AI Chat</span>
         </a>
-        <a href="#notes" class="menu-item" data-view="notes">
-          <span class="material-symbols-rounded">notes</span>
-          <span>Flight & Voice Notes</span>
-        </a>
-        <a href="#manuals" class="menu-item" data-view="manuals">
+        <a href="#" class="menu-item" data-view="manuals">
           <span class="material-symbols-rounded">library_books</span>
-          <span>Manual Library</span>
+          <span>Manuals</span>
         </a>
-        <a href="#checklists" class="menu-item" data-view="checklists">
-          <span class="material-symbols-rounded">fact_check</span>
-          <span>Checklists</span>
-        </a>
-        <a href="#calculators" class="menu-item" data-view="calculators">
-          <span class="material-symbols-rounded">calculate</span>
-          <span>Calculators</span>
-        </a>
-        <a href="#defects" class="menu-item" data-view="defects">
-          <span class="material-symbols-rounded">report_problem</span>
-          <span>Cabin Defect Log</span>
+        <a href="#" class="menu-item" data-view="settings">
+          <span class="material-symbols-rounded">settings</span>
+          <span>Settings</span>
         </a>
       </nav>
       
       <div class="sidebar-footer">
-        <div class="offline-badge">
-          <span class="material-symbols-rounded badge-icon">wifi_off</span>
-          <span class="badge-text">Offline-First Mode</span>
+        <div id="sync-indicator" class="sync-status offline">
+          <span class="material-symbols-rounded">cloud_off</span>
+          <span>Offline Mode</span>
         </div>
-        <button id="theme-toggle" class="theme-btn">
+        <button id="theme-toggle" class="btn btn-tonal btn-block">
           <span class="material-symbols-rounded">light_mode</span>
           <span>Light Mode</span>
         </button>
       </div>
     </aside>
 
-    <!-- Main Content Area -->
+    <!-- Main Viewport Area -->
     <main class="main-content">
       
-      <!-- Top header bar -->
+      <!-- Top Action Bar -->
       <header class="top-bar">
-        <div class="header-search">
-          <span class="material-symbols-rounded search-icon">search</span>
-          <input type="text" id="global-search" placeholder="Smart Search reports, notes, manuals, defects...">
+        <div class="top-bar-left">
+          <h2 id="view-title">Dashboard</h2>
         </div>
-        <div class="header-profile">
-          <div class="sync-status offline" id="sync-indicator">
-            <span class="material-symbols-rounded">cloud_off</span>
-            <span>Offline</span>
+        
+        <div class="top-bar-right">
+          <div class="search-box-wrapper">
+            <span class="material-symbols-rounded">search</span>
+            <input type="search" id="global-search" class="header-search" placeholder="Smart Search EFB...">
           </div>
-          <div class="profile-info">
-            <span class="profile-name">Sajana Shainulabdeen</span>
-            <span class="profile-role">Cabin Supervisor (CS-L1)</span>
+          <div class="profile-badge">
+            <div class="profile-initials">CS</div>
+            <div class="profile-info">
+              <span class="profile-name">Fathima</span>
+              <span class="profile-role">Cabin Supervisor</span>
+            </div>
           </div>
-          <div class="profile-avatar">S</div>
         </div>
       </header>
 
       <!-- View Containers -->
       <div class="view-viewport">
-
-        <!-- DASHBOARD VIEW -->
+        
+        <!-- ================= VIEW 1: DASHBOARD ================= -->
         <section id="view-dashboard" class="app-view active">
-          <div class="view-header">
-            <h2>Welcome back, Sajana</h2>
-            <p>Here is your operational status for today's sectors.</p>
-          </div>
           
-          <!-- Summary Cards -->
-          <div class="summary-grid">
-            <div class="summary-card crimson-glow">
-              <div class="summary-card-header">
-                <h3>Today's Flight</h3>
-                <span class="material-symbols-rounded text-crimson">flight</span>
-              </div>
-              <div class="flight-brief">
-                <span class="flight-no" id="dash-flight-no">G9-137</span>
-                <span class="flight-sector" id="dash-sector">SHJ - JED - SHJ</span>
-                <div class="flight-aircraft">Aircraft: <strong id="dash-ac-reg">A6-ABM</strong> (<span id="dash-ac-type">A320</span>)</div>
+          <!-- Today's Flight Status Card -->
+          <div class="card status-hero-card">
+            <div class="status-hero-header">
+              <div class="status-badge-live"><span class="badge-dot"></span>Active Flight</div>
+              <span class="hero-date" id="hero-date-val">20 Jul 2026</span>
+            </div>
+            
+            <div class="status-hero-body">
+              <div class="flight-sector-display">
+                <div class="sector-node">
+                  <h3>SHJ</h3>
+                  <p>Sharjah</p>
+                </div>
+                <div class="flight-arrow-path">
+                  <span class="flight-no-badge">G9-137</span>
+                  <div class="flight-line-dashed"></div>
+                  <span class="material-symbols-rounded">flight</span>
+                </div>
+                <div class="sector-node">
+                  <h3>CAI</h3>
+                  <p>Cairo</p>
+                </div>
               </div>
             </div>
             
-            <div class="summary-card">
-              <div class="summary-card-header">
-                <h3>Calculated Timings</h3>
-                <span class="material-symbols-rounded text-yellow">schedule</span>
+            <!-- Quick Timeline Milestones -->
+            <div class="flight-timeline-progress">
+              <div class="timeline-step completed">
+                <div class="step-indicator">1</div>
+                <span class="step-label">Sign In</span>
               </div>
-              <div class="dash-timing-summary">
-                <div class="dash-time-row">
-                  <span>Sign In:</span>
-                  <strong id="dash-signin-time">02:10 UTC</strong>
-                </div>
-                <div class="dash-time-row">
-                  <span>Doors Close:</span>
-                  <strong id="dash-close-time">03:10 UTC</strong>
-                </div>
+              <div class="timeline-step completed">
+                <div class="step-indicator">2</div>
+                <span class="step-label">Briefing</span>
               </div>
-            </div>
-
-            <div class="summary-card">
-              <div class="summary-card-header">
-                <h3>Active Crew</h3>
-                <span class="material-symbols-rounded text-green">groups</span>
+              <div class="timeline-step active">
+                <div class="step-indicator">3</div>
+                <span class="step-label">Boarding</span>
               </div>
-              <div class="dash-crew-list">
-                <div class="crew-pill">L1: Sajana (CS)</div>
-                <div class="crew-pill">R1: Prakriti</div>
-                <div class="crew-pill">L4: Mouna</div>
-              </div>
-            </div>
-            
-            <div class="summary-card">
-              <div class="summary-card-header">
-                <h3>Offline Manual RAG</h3>
-                <span class="material-symbols-rounded text-purple">memory</span>
-              </div>
-              <div class="dash-rag-status">
-                <div class="rag-ready-pill">
-                  <span class="material-symbols-rounded">check_circle</span>
-                  <span>1,226 pages cached</span>
-                </div>
-                <span class="rag-ver">CSPM Rev 18 (Oct 2025)</span>
+              <div class="timeline-step">
+                <div class="step-indicator">4</div>
+                <span class="step-label">Landed</span>
               </div>
             </div>
           </div>
 
-          <!-- Interactive Dashboard Panels -->
+          <!-- Quick Actions Grid -->
+          <h3 class="section-title">Quick Actions</h3>
+          <div class="quick-actions-grid">
+            <div class="action-tile" onclick="switchView('report')">
+              <div class="action-icon-circle bg-red">
+                <span class="material-symbols-rounded">edit_document</span>
+              </div>
+              <h4>New Flight</h4>
+              <p>Buffer timelines</p>
+            </div>
+            
+            <div class="action-tile" onclick="switchView('report'); document.getElementById('tab-log-sheet').click();">
+              <div class="action-icon-circle bg-blue">
+                <span class="material-symbols-rounded">description</span>
+              </div>
+              <h4>Log Sheet</h4>
+              <p>A4 print preview</p>
+            </div>
+            
+            <div class="action-tile" onclick="switchView('chat')">
+              <div class="action-icon-circle bg-orange">
+                <span class="material-symbols-rounded">chat_bubble</span>
+              </div>
+              <h4>AI Chatbot</h4>
+              <p>Search safety manual</p>
+            </div>
+            
+            <div class="action-tile" onclick="switchView('settings'); document.getElementById('tab-notes-config').click();">
+              <div class="action-icon-circle bg-green">
+                <span class="material-symbols-rounded">mic</span>
+              </div>
+              <h4>Voice Notes</h4>
+              <p>Record memos</p>
+            </div>
+            
+            <div class="action-tile" onclick="switchView('manuals')">
+              <div class="action-icon-circle bg-purple">
+                <span class="material-symbols-rounded">library_books</span>
+              </div>
+              <h4>EFB Manual</h4>
+              <p>Chapters & Search</p>
+            </div>
+          </div>
+
+          <!-- Dashboard Panel Cards -->
           <div class="dashboard-panels">
-            <div class="panel-main">
-              <div class="panel-header">
-                <h3>Active Flight Timeline</h3>
-                <button class="panel-btn text-crimson" onclick="switchView('report-generator')">Open Report</button>
+            <!-- Manual Sync Status -->
+            <div class="card panel-card">
+              <div class="card-header-icon">
+                <span class="material-symbols-rounded text-crimson">lock_open</span>
+                <h3>Security & EFB Status</h3>
               </div>
-              <div class="timeline-container-scroll">
-                <div class="timeline-visual" id="dash-timeline-visual">
-                  <div class="timeline-node completed">
-                    <div class="node-icon">🟢</div>
-                    <div class="node-info">
-                      <h4>Arrive to Office</h4>
-                      <span class="node-time">01:55 Local</span>
-                    </div>
-                  </div>
-                  <div class="timeline-node active">
-                    <div class="node-icon">🟡</div>
-                    <div class="node-info">
-                      <h4>Briefing Starts</h4>
-                      <span class="node-time">02:10 Local</span>
-                    </div>
-                  </div>
-                  <div class="timeline-node">
-                    <div class="node-icon">⚪</div>
-                    <div class="node-info">
-                      <h4>Boarding Clearance</h4>
-                      <span class="node-time">02:50 Local</span>
-                    </div>
-                  </div>
+              <div class="panel-body">
+                <div class="status-metric-row">
+                  <span>Active CSPM Revision</span>
+                  <strong>Revision 18 (15 Oct 2025)</strong>
+                </div>
+                <div class="status-metric-row">
+                  <span>Local Database</span>
+                  <span class="badge badge-success">Encrypted & Online</span>
+                </div>
+                <div class="status-metric-row">
+                  <span>Last Sync Date</span>
+                  <span>Today 18:21 (UTC)</span>
+                </div>
+                <div class="status-metric-row">
+                  <span>Microphone Access</span>
+                  <span class="badge badge-success">Granted</span>
                 </div>
               </div>
             </div>
-            
-            <div class="panel-side">
-              <div class="panel-header">
-                <h3>Recent Reports & Log Sheets</h3>
+
+            <!-- Recent Reports Log -->
+            <div class="card panel-card">
+              <div class="card-header-icon">
+                <span class="material-symbols-rounded text-blue">history</span>
+                <h3>Recent Flight Reports</h3>
               </div>
-              <ul class="recent-list" id="recent-reports-list">
-                <!-- Javascript fills this -->
-              </ul>
+              <div class="panel-body">
+                <ul class="recent-reports-list" id="recent-reports-list">
+                  <!-- Javascript will populate this -->
+                </ul>
+              </div>
             </div>
           </div>
         </section>
-
-
-        <!-- FLIGHT REPORT GENERATOR -->
-        <section id="view-report-generator" class="app-view">
-          <div class="view-header">
-            <h2>Smart Flight Report Generator</h2>
-            <p>Enter local departure/arrival timings. The app automatically calculates all benchmarks.</p>
-          </div>
+        
+        <!-- ================= VIEW 2: FLIGHTS & WIZARDS ================= -->
+        <section id="view-report" class="app-view">
           
-          <div class="report-layout">
-            <div class="report-inputs-card card">
-              <h3>Flight Specifications</h3>
-              <form id="report-form" class="form-grid">
-                <div class="form-group">
-                  <label for="rep-date">Flight Date</label>
-                  <input type="date" id="rep-date" required>
+          <!-- Tab Navigation inside Flights -->
+          <div class="tab-bar">
+            <button class="tab-btn active" id="tab-report-form" onclick="toggleSubTab('report-form')">
+              <span class="material-symbols-rounded">edit_document</span>
+              <span>Flight Report</span>
+            </button>
+            <button class="tab-btn" id="tab-log-sheet" onclick="toggleSubTab('log-sheet')">
+              <span class="material-symbols-rounded">description</span>
+              <span>A4 Flight Log Sheet</span>
+            </button>
+          </div>
+
+          <!-- Sub-Tab A: Flight Report Inputs and Timelines -->
+          <div id="subtab-report-form" class="subtab-content active">
+            <div class="report-layout">
+              <!-- Parameters Form Card -->
+              <div class="card form-card">
+                <h3>Flight Configuration</h3>
+                <form id="report-form" class="grid-form">
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="rep-date">Flight Date</label>
+                      <input type="date" id="rep-date" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="rep-flight-no">Flight Number</label>
+                      <input type="text" id="rep-flight-no" placeholder="e.g. G9-137" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="rep-sector">Sector (From - To)</label>
+                      <input type="text" id="rep-sector" placeholder="e.g. SHJ-CAI" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="rep-ac-type">Aircraft Type</label>
+                      <select id="rep-ac-type">
+                        <option value="A320">Airbus A320</option>
+                        <option value="A321">Airbus A321</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="rep-ac-reg">Aircraft Reg</label>
+                      <input type="text" id="rep-ac-reg" placeholder="e.g. A6-ANA" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="rep-pax-count">Passenger Count</label>
+                      <input type="number" id="rep-pax-count" placeholder="e.g. 162" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="rep-std">Scheduled Departure (STD)</label>
+                      <input type="time" id="rep-std" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="rep-sta">Scheduled Arrival (STA)</label>
+                      <input type="time" id="rep-sta" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="rep-timezone">Outstation Timezone Offset (relative to UTC)</label>
+                      <input type="number" id="rep-timezone" placeholder="e.g. 2 for Cairo" required>
+                    </div>
+                    <div class="form-group full-width">
+                      <label for="rep-specials">Special Category Passengers (SCPs)</label>
+                      <input type="text" id="rep-specials" placeholder="e.g. 2 WCHR, 1 INF, 1 DEPO">
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-block">Generate Flight Timelines</button>
+                </form>
+              </div>
+
+              <!-- Output Timelines List Card -->
+              <div class="card timeline-output-card">
+                <div class="timeline-output-header">
+                  <h3>Calculated Benchmark Timelines</h3>
+                  <div class="toggle-group">
+                    <button class="btn-toggle active" id="btn-show-local">Local Time</button>
+                    <button class="btn-toggle" id="btn-show-utc">UTC Time</button>
+                  </div>
                 </div>
                 
-                <div class="form-group">
-                  <label for="rep-flight-no">Flight Number</label>
-                  <input type="text" id="rep-flight-no" placeholder="e.g. G9-137" required>
-                </div>
-
-                <div class="form-group">
-                  <label for="rep-sector">Sector</label>
-                  <input type="text" id="rep-sector" placeholder="e.g. SHJ-JED" required>
-                </div>
-
-                <div class="form-group">
-                  <label for="rep-ac-type">Aircraft Type</label>
-                  <select id="rep-ac-type" required>
-                    <option value="A320">Airbus A320</option>
-                    <option value="A321">Airbus A321</option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label for="rep-ac-reg">A/C Registration</label>
-                  <input type="text" id="rep-ac-reg" placeholder="e.g. A6-ABM" required>
-                </div>
-
-                <div class="form-group">
-                  <label for="rep-pax-count">Passenger Count</label>
-                  <input type="number" id="rep-pax-count" placeholder="147" required>
-                </div>
-
-                <div class="form-group">
-                  <label for="rep-std">Departure Time (Local)</label>
-                  <input type="time" id="rep-std" required>
-                </div>
-
-                <div class="form-group">
-                  <label for="rep-sta">Arrival Time (Local)</label>
-                  <input type="time" id="rep-sta" required>
+                <div class="timings-result-grid" id="timings-result-grid">
+                  <div class="timings-placeholder">
+                    <span class="material-symbols-rounded">schedule</span>
+                    <p>Enter flight parameters and press generate to show timeline buffers.</p>
+                  </div>
                 </div>
                 
-                <div class="form-group">
-                  <label for="rep-timezone">Airport Timezone Offset</label>
-                  <select id="rep-timezone" required>
-                    <option value="+4">Sharjah (SHJ) UTC+4</option>
-                    <option value="+3">Jeddah / Cairo (JED/CAI) UTC+3</option>
-                    <option value="+2">Amman (AMM) UTC+2</option>
-                    <option value="+1">Casablanca (CMN) UTC+1</option>
-                    <option value="+0">UTC / GMT</option>
-                  </select>
+                <div class="results-action-buttons" id="results-action-buttons" style="display:none;">
+                  <button id="btn-save-report" class="btn btn-primary">
+                    <span class="material-symbols-rounded">save</span> Populate Log Sheet
+                  </button>
                 </div>
-
-                <div class="form-group full-width">
-                  <label for="rep-specials">Special Passengers (SCPs)</label>
-                  <input type="text" id="rep-specials" placeholder="e.g. 1 WCHC, 2 Infants">
-                </div>
-
-                <div class="form-group full-width">
-                  <button type="submit" class="btn btn-primary btn-block">Calculate & Generate Timings</button>
-                </div>
-              </form>
-            </div>
-            
-            <div class="report-results-card card">
-              <div class="results-header">
-                <h3>Operational Timings</h3>
-                <div class="toggle-container">
-                  <button class="toggle-btn active" id="btn-show-local">Local Time</button>
-                  <button class="toggle-btn" id="btn-show-utc">UTC Time</button>
-                </div>
-              </div>
-              
-              <div class="timings-grid" id="timings-result-grid">
-                <div class="timings-placeholder">
-                  <span class="material-symbols-rounded">update</span>
-                  <p>Enter Flight details to generate timelines</p>
-                </div>
-              </div>
-              
-              <div class="results-footer" id="results-action-buttons" style="display: none;">
-                <button class="btn btn-outline" id="btn-edit-timings">
-                  <span class="material-symbols-rounded">edit</span> Edit Timings
-                </button>
-                <button class="btn btn-primary" id="btn-save-report">
-                  <span class="material-symbols-rounded">save</span> Save Report & Populate Log Sheet
-                </button>
               </div>
             </div>
           </div>
-        </section>
 
-
-        <!-- FLIGHT LOG SHEET VIEW (EXACT MATCHING TEMPLATE ONLY) -->
-        <section id="view-log-sheet" class="app-view">
-          <div class="view-header">
-            <h2>Cabin Flight Log Sheet</h2>
-            <p>Automatically populated from active flight reports. Export as Docx/PDF, share, or duplicate.</p>
-          </div>
-          
-          <div class="log-sheet-actions card">
-            <button class="btn btn-primary" id="btn-export-pdf">
-              <span class="material-symbols-rounded">picture_as_pdf</span> Export as PDF
-            </button>
-            <button class="btn btn-outline" id="btn-export-docx">
-              <span class="material-symbols-rounded">article</span> Export as Word (.docx)
-            </button>
-            <button class="btn btn-outline" id="btn-share-log">
-              <span class="material-symbols-rounded">share</span> Share Log
-            </button>
-            <button class="btn btn-outline" id="btn-duplicate-log">
-              <span class="material-symbols-rounded">content_copy</span> Duplicate
-            </button>
-            <button class="btn btn-outline" id="btn-print-log" onclick="window.print()">
-              <span class="material-symbols-rounded">print</span> Print Sheet
-            </button>
-          </div>
-
-          <!-- Flight Log Sheet Template Container -->
-          <div class="log-sheet-template-wrapper">
-            <div class="log-sheet-paper" id="log-sheet-print-area">
-              
-              <!-- Paper Header -->
-              <div class="sheet-title-section">
-                <h2>DATE : <input type="text" class="sheet-cell inline-cell" style="width:100px;" id="sheet-date" value="13/07/2026"> SECTOR : <input type="text" class="sheet-cell inline-cell" style="width:140px;" id="sheet-sector" value="SHJ-JED-SHJ"> A/C REG : A6 - <input type="text" class="sheet-cell inline-cell" style="width:80px;" id="sheet-ac-reg" value="ABM"> BAY : <input type="text" class="sheet-cell inline-cell" style="width:80px;" id="sheet-bay" value="12A"></h2>
+          <!-- Sub-Tab B: Flight Log Sheet Preview & Export -->
+          <div id="subtab-log-sheet" class="subtab-content">
+            <div class="log-sheet-wizard">
+              <div class="card wizard-actions-card">
+                <h3>Log Sheet Actions</h3>
+                <div class="actions-buttons-row">
+                  <button id="btn-export-pdf" class="btn btn-tonal">
+                    <span class="material-symbols-rounded">picture_as_pdf</span> Print / Save PDF
+                  </button>
+                  <button id="btn-export-docx" class="btn btn-tonal">
+                    <span class="material-symbols-rounded">description</span> Export Word (.doc)
+                  </button>
+                  <button id="btn-share-log" class="btn btn-tonal">
+                    <span class="material-symbols-rounded">share</span> Share Report
+                  </button>
+                  <button id="btn-duplicate-log" class="btn btn-tonal">
+                    <span class="material-symbols-rounded">content_copy</span> Duplicate for Next Flight
+                  </button>
+                </div>
               </div>
-              
-              <!-- Top Metadata Box -->
-              <table class="sheet-table meta-table">
-                <tr>
-                  <td style="width:50%;"><strong>FLIGHT TIME OUTBOUND:</strong> <input type="text" class="sheet-cell" id="sheet-time-out" value="02 HR 50 MIN"></td>
-                  <td style="width:50%;"><strong>FLIGHT TIME INBOUND:</strong> <input type="text" class="sheet-cell" id="sheet-time-in" value="02 HR 45 MIN"></td>
-                </tr>
-                <tr>
-                  <td colspan="2">
-                    <table style="width:100%; border:none; margin:0;" class="nested-table">
-                      <tr style="border:none;">
-                        <td style="border:none; width:33%;"><strong>PAX OUTBOUND:</strong> <input type="text" class="sheet-cell inline-cell" style="width:60px;" id="sheet-pax-out" value="147"></td>
-                        <td style="border:none; width:33%;"><strong>PAX INBOUND:</strong> <input type="text" class="sheet-cell inline-cell" style="width:60px;" id="sheet-pax-in" value="102"></td>
-                        <td style="border:none; width:34%;"><strong>TOTAL:</strong> <input type="text" class="sheet-cell inline-cell" style="width:80px;" id="sheet-pax-total" value="249"></td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="2">
-                    <table style="width:100%; border:none; margin:0;" class="nested-table">
-                      <tr style="border:none;">
-                        <td style="border:none; width:33%;"><strong>SALES OUTB (L/D):</strong> <input type="text" class="sheet-cell inline-cell" style="width:80px;" id="sheet-sales-out" value="1200"></td>
-                        <td style="border:none; width:33%;"><strong>SALES IN (L/D):</strong> <input type="text" class="sheet-cell inline-cell" style="width:80px;" id="sheet-sales-in" value="850"></td>
-                        <td style="border:none; width:34%;"><strong>TOTAL:</strong> <input type="text" class="sheet-cell inline-cell" style="width:100px;" id="sheet-sales-total" value="2050"></td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
 
-              <!-- Left/Right Operations Timings -->
-              <div class="sheet-split-grid">
-                <div class="sheet-col">
-                  <div class="sheet-col-header">OUTBOUND (Flight No: <input type="text" class="sheet-cell inline-cell" style="width:60px; font-weight:bold;" id="sheet-fl-out" value="G9-137">)</div>
-                  <table class="sheet-table timing-table">
+              <!-- A4 Page Recreated Layout Container -->
+              <div class="log-sheet-template-wrapper">
+                <div class="log-sheet-paper" id="log-sheet-print-area">
+                  
+                  <div class="sheet-header">
+                    <div class="sheet-title-section">
+                      <h2>Air Arabia</h2>
+                      <h1>Cabin Flight Log Sheet</h1>
+                      <div class="sheet-sub">Official Flight Operations & Safety Record (All times in UTC)</div>
+                    </div>
+                  </div>
+
+                  <!-- Segment Details Section -->
+                  <div class="sheet-section-title">1. Flight Segment Details</div>
+                  <table class="sheet-table">
                     <tr>
-                      <td style="width:70%;"><strong>BRIEFING STARTS</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-brief-start" value="02.10"></td>
+                      <th>Date</th>
+                      <td><input type="text" id="sheet-date" class="sheet-cell"></td>
+                      <th>Sector</th>
+                      <td><input type="text" id="sheet-sector" class="sheet-cell"></td>
+                      <th>A/C Reg</th>
+                      <td><input type="text" id="sheet-ac-reg" class="sheet-cell"></td>
                     </tr>
                     <tr>
-                      <td><strong>BRIEFING COMPLETED</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-brief-end" value="02.20"></td>
+                      <th>Flight Outbound</th>
+                      <td><input type="text" id="sheet-fl-out" class="sheet-cell"></td>
+                      <th>Pax Count</th>
+                      <td><input type="text" id="sheet-pax-out" class="sheet-cell"></td>
+                      <th>Specials (SCPs)</th>
+                      <td><input type="text" id="sheet-specials-out" class="sheet-cell"></td>
                     </tr>
                     <tr>
-                      <td><strong>FIRST BUS</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-bus1" value="02.22"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>SECOND BUS</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-bus2" value="02.30"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>FC ONBOARD / CC ONBOARD</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-cabin-ob" value="02.40"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>CLEANING STARTS</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-clean-start" value="00.00"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>CLEANING DONE</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-clean-end" value="00.00"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>BOARDING CLEARANCE</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-board-clear" value="02.50"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>FIRST PASSENGER</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-first-pax" value="02.51"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>LAST PASSENGER</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-last-pax" value="03.08"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>DOOR CLOSED</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-door-close" value="03.10"></td>
+                      <th>Flight Inbound</th>
+                      <td><input type="text" id="sheet-fl-in" class="sheet-cell"></td>
+                      <th>Pax Inbound</th>
+                      <td><input type="text" class="sheet-cell"></td>
+                      <th>Specials Inbound</th>
+                      <td><input type="text" class="sheet-cell"></td>
                     </tr>
                   </table>
-                </div>
 
-                <div class="sheet-col">
-                  <div class="sheet-col-header">INBOUND (Flight No: <input type="text" class="sheet-cell inline-cell" style="width:60px; font-weight:bold;" id="sheet-fl-in" value="G9-138">)</div>
-                  <table class="sheet-table timing-table">
+                  <!-- Timing Benchmarks Grid -->
+                  <div class="sheet-section-title">2. Operational Timings (UTC)</div>
+                  <div class="sheet-split-grid">
+                    <div class="sheet-col">
+                      <div class="col-title">Outbound Milestone</div>
+                      <table class="sheet-table">
+                        <tr><th>Briefing Start</th><td><input type="text" id="sheet-t-brief-start" class="sheet-cell"></td></tr>
+                        <tr><th>Briefing End</th><td><input type="text" id="sheet-t-brief-end" class="sheet-cell"></td></tr>
+                        <tr><th>First Bus</th><td><input type="text" id="sheet-t-bus1" class="sheet-cell"></td></tr>
+                        <tr><th>Second Bus</th><td><input type="text" id="sheet-t-bus2" class="sheet-cell"></td></tr>
+                        <tr><th>Crew Onboard</th><td><input type="text" id="sheet-t-cabin-ob" class="sheet-cell"></td></tr>
+                        <tr><th>Cleaning Start</th><td><input type="text" id="sheet-t-clean-start" class="sheet-cell"></td></tr>
+                        <tr><th>Cleaning Done</th><td><input type="text" id="sheet-t-clean-end" class="sheet-cell"></td></tr>
+                        <tr><th>Boarding Clear</th><td><input type="text" id="sheet-t-board-clear" class="sheet-cell"></td></tr>
+                        <tr><th>First Pax</th><td><input type="text" id="sheet-t-first-pax" class="sheet-cell"></td></tr>
+                        <tr><th>Last Pax</th><td><input type="text" id="sheet-t-last-pax" class="sheet-cell"></td></tr>
+                        <tr><th>Door Closed</th><td><input type="text" id="sheet-t-door-close" class="sheet-cell"></td></tr>
+                      </table>
+                    </div>
+
+                    <div class="sheet-col">
+                      <div class="col-title">Inbound / Transit Milestone</div>
+                      <table class="sheet-table">
+                        <tr><th>Aircraft Landed</th><td><input type="text" id="sheet-t-land" class="sheet-cell"></td></tr>
+                        <tr><th>Door Open</th><td><input type="text" id="sheet-t-door-open" class="sheet-cell"></td></tr>
+                        <tr><th>Last Disembark</th><td><input type="text" id="sheet-t-last-disembark" class="sheet-cell"></td></tr>
+                        <tr><th>Transit Clean Start</th><td><input type="text" id="sheet-t-in-clean-start" class="sheet-cell"></td></tr>
+                        <tr><th>Transit Clean End</th><td><input type="text" id="sheet-t-in-clean-end" class="sheet-cell"></td></tr>
+                        <tr><th>Transit Boarding Clear</th><td><input type="text" id="sheet-t-in-board-clear" class="sheet-cell"></td></tr>
+                        <tr><th>Transit First Pax</th><td><input type="text" id="sheet-t-in-first-pax" class="sheet-cell"></td></tr>
+                        <tr><th>Transit Last Pax</th><td><input type="text" id="sheet-t-in-last-pax" class="sheet-cell"></td></tr>
+                        <tr><th>Transit Door Close</th><td><input type="text" id="sheet-t-in-door-close" class="sheet-cell"></td></tr>
+                        <tr><th>Sharjah Door Open</th><td><input type="text" id="sheet-t-shj-open" class="sheet-cell"></td></tr>
+                        <tr><th>Sharjah Last Disembark</th><td><input type="text" id="sheet-t-shj-last" class="sheet-cell"></td></tr>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- Seals Verification & Briefings -->
+                  <div class="sheet-section-title">3. Safety Verifications & Security Seals</div>
+                  <table class="sheet-table">
                     <tr>
-                      <td style="width:70%;"><strong>AIRCRAFT LANDED</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-land" value="06.13"></td>
+                      <th>Forward Seals (L1/R1)</th>
+                      <td><input type="text" value="OK / Secure - 418519" class="sheet-cell"></td>
+                      <th>Aft Seals (L4/R4)</th>
+                      <td><input type="text" value="OK / Secure - 912851" class="sheet-cell"></td>
                     </tr>
                     <tr>
-                      <td><strong>DOOR OPEN</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-door-open" value="06.15"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>LAST PASSENGER</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-last-disembark" value="06.20"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>CLEANING STARTS</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-in-clean-start" value="06.21"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>CLEANING DONE</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-in-clean-end" value="06.29"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>BOARDING CLEARANCE</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-in-board-clear" value="06.30"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>FIRST PASSENGER</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-in-first-pax" value="06.35"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>LAST PASSENGER</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-in-last-pax" value="06.55"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>DOOR CLOSED</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-in-door-close" value="07.00"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>DOOR OPEN IN SHARJAH</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-shj-open" value="09.42"></td>
-                    </tr>
-                    <tr>
-                      <td><strong>LAST PASSENGER</strong></td>
-                      <td><input type="text" class="sheet-cell" id="sheet-t-shj-last" value="09.52"></td>
+                      <th>Pre-flight Safety Checks</th>
+                      <td><input type="text" value="Completed by all crew positions" class="sheet-cell"></td>
+                      <th>Commander Briefing</th>
+                      <td><input type="text" value="Received & Actioned" class="sheet-cell"></td>
                     </tr>
                   </table>
+
+                  <!-- Flight Anomalies and Log -->
+                  <div class="sheet-section-title">4. Safety Discrepancies & Delay Log</div>
+                  <div class="sheet-split-grid">
+                    <div class="sheet-col">
+                      <label class="sheet-field-label">Outbound Delay Code / Reason</label>
+                      <textarea class="sheet-textarea" rows="2">None. OTP achieved.</textarea>
+                    </div>
+                    <div class="sheet-col">
+                      <label class="sheet-field-label">Inbound Delay Code / Reason</label>
+                      <textarea class="sheet-textarea" rows="2">None. Standard transit flow.</textarea>
+                    </div>
+                  </div>
+                  
+                  <div style="margin-top:10px;">
+                    <label class="sheet-field-label">Cabin Defect / Safety Discrepancies Logged</label>
+                    <textarea class="sheet-textarea" rows="2">None logged this segment.</textarea>
+                  </div>
+
+                  <div class="sheet-footer-signatures">
+                    <div class="sig-block">
+                      <div class="sig-line"></div>
+                      <span>Cabin Supervisor Signature</span>
+                    </div>
+                    <div class="sig-block">
+                      <div class="sig-line"></div>
+                      <span>Commander Signature (Verify)</span>
+                    </div>
+                  </div>
+
                 </div>
               </div>
 
-              <!-- Bottom details mapping physical layout -->
-              <table class="sheet-table details-table">
-                <tr>
-                  <td style="width:50%;"><strong>FORWARD SEAL NUMBERS:</strong><br><input type="text" class="sheet-cell" id="sheet-seal-fwd" value="5677889-94"></td>
-                  <td style="width:50%;"><strong>AFT SEAL NUMBERS:</strong><br><input type="text" class="sheet-cell" id="sheet-seal-aft" value="5677895-90"></td>
-                </tr>
-                <tr>
-                  <td><strong>SPECIALS OUTBOUND:</strong><br><input type="text" class="sheet-cell" id="sheet-specials-out" value="WCHC 1, Infants 2"></td>
-                  <td><strong>SPECIALS INBOUND:</strong><br><input type="text" class="sheet-cell" id="sheet-specials-in" value="None"></td>
-                </tr>
-                <tr>
-                  <td colspan="2"><strong>DELAY OUTBOUND:</strong><br><input type="text" class="sheet-cell" id="sheet-delay-out" value="Airport closure 3AHRS (ATC Code 3A)"></td>
-                </tr>
-                <tr>
-                  <td colspan="2"><strong>DELAY INBOUND:</strong><br><input type="text" class="sheet-cell" id="sheet-delay-in" value="Inbound slow boarding due to late arrival of pax (10 mins)"></td>
-                </tr>
-                <tr>
-                  <td><strong>ONLINE SERVING OUTBOUND:</strong><br><input type="text" class="sheet-cell" id="sheet-online-out" value="All served"></td>
-                  <td><strong>ONLINE SERVING INBOUND:</strong><br><input type="text" class="sheet-cell" id="sheet-online-in" value="1 no show"></td>
-                </tr>
-              </table>
-
-              <!-- Defect description -->
-              <div class="sheet-section-title">CABIN DEFECTS :</div>
-              <textarea class="sheet-textarea" id="sheet-defects" rows="4">Seat 12C tray table lock broken. IQSMS defect raised. AFT lavatory water leak reported to Ground Engineer.</textarea>
-
             </div>
           </div>
+
         </section>
-
-
-        <!-- SAJNA AI OFFLINE CHAT VIEW -->
-        <section id="view-ai-chat" class="app-view">
-          <div class="view-header">
-            <h2>SAJNA AI Chat</h2>
-            <p>Answers queries exclusively from the Air Arabia Cabin Safety Procedure Manual (CSPM Rev 18) stored offline.</p>
-          </div>
-          
+        
+        <!-- ================= VIEW 3: AI SAFETY CHAT ================= -->
+        <section id="view-chat" class="app-view">
           <div class="ai-chat-layout">
-            <!-- Left panel: chat interface -->
-            <div class="chat-container card">
+            
+            <!-- Chat Interface Screen -->
+            <div class="card chat-messages-card">
               <div class="chat-header">
-                <div class="bot-avatar">AI</div>
-                <div class="bot-status">
-                  <h3>SAJNA AI Assistant</h3>
-                  <div class="status-indicator-wrapper">
-                    <span class="pulse-green"></span>
-                    <span>100% Offline CSPM Retrieval</span>
-                  </div>
+                <span class="status-indicator online"></span>
+                <div class="chat-header-meta">
+                  <h3>SAJNA Safety AI</h3>
+                  <p>Ask safety procedures, drills or DGR rules</p>
                 </div>
               </div>
               
-              <div class="chat-messages" id="chat-messages-box">
+              <!-- Chat Logs Box -->
+              <div class="chat-messages-box" id="chat-messages-box">
                 <div class="chat-msg bot">
                   <div class="msg-bubble">
-                    Hello Sajana, I am SAJNA AI. I have fully indexed the **Air Arabia Cabin Safety Procedure Manual (DOC No.: ABY/OPS/CSP/014)** offline on your device.
+                    Hello! I am SAJNA, your offline Safety Assistant. I have cached the entire **Cabin Safety Procedure Manual (Rev 18)**.
                     <br><br>
-                    You can ask me questions about door arming, medical emergencies, dangerous goods, infant rules, fire procedures, or cabin secure checks. How can I help you today?
+                    You can ask me questions like:
+                    <ul>
+                      <li><em>"How do we arm the cabin doors?"</em></li>
+                      <li><em>"What is the drill for a lithium battery fire?"</em></li>
+                      <li><em>"What should I do if a passenger refuses to fasten their seat belt?"</em></li>
+                    </ul>
                   </div>
                 </div>
               </div>
-              
+
+              <!-- Message Composer -->
               <div class="chat-input-bar">
-                <button class="chat-mic-btn" id="btn-voice-chat" title="Offline Speech to Text">
+                <button class="btn-chat-icon" id="btn-voice-chat" title="Speech to Text input">
                   <span class="material-symbols-rounded">mic</span>
                 </button>
-                <input type="text" id="chat-text-input" placeholder="Type a safety question (e.g. 'door arming' or 'fire procedure')...">
-                <button class="chat-send-btn" id="btn-send-chat">
+                <input type="text" id="chat-text-input" placeholder="Type safety query (e.g. 'door arming')...">
+                <button class="btn-chat-icon primary" id="btn-send-chat">
                   <span class="material-symbols-rounded">send</span>
                 </button>
               </div>
             </div>
-            
-            <!-- Right panel: Document Viewer / Reference Box -->
-            <div class="reference-panel card">
-              <h3>Manual Source Reference</h3>
-              <p class="ref-sub">When you ask a question, the corresponding section of the manual will be highlighted here.</p>
-              
-              <div class="ref-card" id="manual-ref-box">
-                <div class="ref-placeholder">
+
+            <!-- EFB Document Reference Display Panel (Hidden on Mobile) -->
+            <div class="card reference-panel" id="reference-panel">
+              <h3>Active Manual Reference</h3>
+              <div id="manual-ref-box" class="manual-ref-box">
+                <div class="ref-empty-state">
                   <span class="material-symbols-rounded">find_in_page</span>
-                  <p>Ask a question in the chat to retrieve live safety references.</p>
+                  <p>When you ask the AI, the corresponding official manual page text and section references will appear here for double verification.</p>
                 </div>
               </div>
             </div>
+
           </div>
         </section>
-
-
-        <!-- NOTES VIEW -->
-        <section id="view-notes" class="app-view">
-          <div class="view-header">
-            <h2>Flight & Voice Notes</h2>
-            <p>Capture typed notes or use offline English speech-to-text. Pin, categorize, or search your flight notes.</p>
-          </div>
-          
-          <div class="notes-layout">
-            <div class="notes-form card">
-              <h3 id="note-form-title">Create New Note</h3>
-              <form id="note-form">
-                <div class="form-group">
-                  <label for="note-title">Title</label>
-                  <input type="text" id="note-title" placeholder="e.g. Catering issues G9-137" required>
-                </div>
-                
-                <div class="form-group">
-                  <label for="note-category">Category</label>
-                  <select id="note-category" required>
-                    <option value="Catering">Catering</option>
-                    <option value="Safety">Safety Observation</option>
-                    <option value="Defects">Cabin Defect</option>
-                    <option value="Complaints">Passenger Complaint</option>
-                    <option value="Reminders">Personal Reminder</option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label for="note-flight">Flight No (Optional)</label>
-                  <input type="text" id="note-flight" placeholder="G9-137">
-                </div>
-
-                <div class="form-group">
-                  <div class="label-with-btn">
-                    <label for="note-content">Note Content</label>
-                    <button type="button" class="btn-micro" id="btn-note-speech">
-                      <span class="material-symbols-rounded">mic</span> Speech to Text
-                    </button>
-                  </div>
-                  <textarea id="note-content" rows="6" placeholder="Write or speak your note details..." required></textarea>
-                </div>
-
-                <div class="form-actions">
-                  <button type="button" class="btn btn-outline" id="btn-clear-note">Clear</button>
-                  <button type="submit" class="btn btn-primary" id="btn-save-note">Save Note</button>
-                </div>
-              </form>
-            </div>
-            
-            <div class="notes-list-panel card">
-              <div class="notes-list-header">
-                <h3>Saved Flight Notes</h3>
-                <input type="text" id="notes-search" placeholder="Search notes...">
-              </div>
-              
-              <div class="notes-scroll-grid" id="notes-list-container">
-                <!-- Javascript will load notes from localStorage -->
-              </div>
-            </div>
-          </div>
-        </section>
-
-
-        <!-- MANUAL LIBRARY VIEW (ALL 13 SECTIONS REPRESENTED IN SIDEBAR) -->
+        
+        <!-- ================= VIEW 4: MANUAL E-READER ================= -->
         <section id="view-manuals" class="app-view">
-          <div class="view-header">
-            <h2>Cabin Safety Manual Library</h2>
-            <p>Fast offline search, bookmarks, night mode, page jumping, and highlighting inside the safety manual.</p>
-          </div>
-          
           <div class="manuals-layout">
-            <div class="manual-sidebar card">
-              <h3>Manual Contents</h3>
-              <input type="text" id="manual-toc-search" placeholder="Filter Chapters...">
+            
+            <!-- Left Side: TOC and Index -->
+            <div class="card manual-toc-card">
+              <div class="toc-search-wrapper">
+                <span class="material-symbols-rounded">search</span>
+                <input type="text" id="manual-search-index" placeholder="Filter EFB Chapters...">
+              </div>
               
               <ul class="manual-toc-list" id="manual-toc-list">
-                <li class="active" data-chapter="som">Structure of Manual</li>
-                <li data-chapter="ch0">Chapter 0: Administration</li>
-                <li data-chapter="ch1">Chapter 1: Qualification & Regulations</li>
-                <li data-chapter="ch2">Chapter 2: SOPs</li>
-                <li data-chapter="ch3">Chapter 3: Safety & Emergency Equipment</li>
-                <li data-chapter="ch4">Chapter 4: Emergency Procedures</li>
-                <li data-chapter="ch5">Chapter 5: Drills</li>
-                <li data-chapter="ch6">Chapter 6: Survival</li>
-                <li data-chapter="ch7">Chapter 7: Medical & First Aid</li>
-                <li data-chapter="ch8">Chapter 8: A320/A321 Systems</li>
-                <li data-chapter="ch9">Chapter 9: A321NEO/CEO Systems</li>
-                <li data-chapter="ch10">Chapter 10: Dangerous Goods</li>
-                <li data-chapter="ch11">Chapter 11: Security</li>
-                <li data-chapter="ch12">Chapter 12: Appendices</li>
+                <li class="active" data-chapter="som">
+                  <span class="chapter-badge">SOM</span>
+                  <div class="chapter-desc">
+                    <strong>Administration</strong>
+                    <span>Page 9 - Distribution Control</span>
+                  </div>
+                </li>
+                <li data-chapter="ch1">
+                  <span class="chapter-badge">CH 1</span>
+                  <div class="chapter-desc">
+                    <strong>Qualification & Legal</strong>
+                    <span>Page 12 - Crew Complement</span>
+                  </div>
+                </li>
+                <li data-chapter="ch2">
+                  <span class="chapter-badge">CH 2</span>
+                  <div class="chapter-desc">
+                    <strong>Standard Operating Proc</strong>
+                    <span>Page 268 - Door Arming & Secure</span>
+                  </div>
+                </li>
+                <li data-chapter="ch3">
+                  <span class="chapter-badge">CH 3</span>
+                  <div class="chapter-desc">
+                    <strong>Emergency Equipment</strong>
+                    <span>Page 481 - Oxygen & Extinguishers</span>
+                  </div>
+                </li>
+                <li data-chapter="ch4">
+                  <span class="chapter-badge">CH 4</span>
+                  <div class="chapter-desc">
+                    <strong>Emergency Procedures</strong>
+                    <span>Page 493 - Planned Evacuations</span>
+                  </div>
+                </li>
+                <li data-chapter="ch5">
+                  <span class="chapter-badge">CH 5</span>
+                  <div class="chapter-desc">
+                    <strong>Drills</strong>
+                    <span>Page 580 - Fire Fighting & Smoke</span>
+                  </div>
+                </li>
+                <li data-chapter="ch6">
+                  <span class="chapter-badge">CH 6</span>
+                  <div class="chapter-desc">
+                    <strong>Survival</strong>
+                    <span>Page 601 - Ditching & Sea Survival</span>
+                  </div>
+                </li>
+                <li data-chapter="ch7">
+                  <span class="chapter-badge">CH 7</span>
+                  <div class="chapter-desc">
+                    <strong>Medical & First Aid</strong>
+                    <span>Page 635 - Principles of CPR & AED</span>
+                  </div>
+                </li>
+                <li data-chapter="ch9">
+                  <span class="chapter-badge">CH 9</span>
+                  <div class="chapter-desc">
+                    <strong>A321NEO Systems</strong>
+                    <span>Page 951 - ACF Configuration</span>
+                  </div>
+                </li>
+                <li data-chapter="ch10">
+                  <span class="chapter-badge">CH 10</span>
+                  <div class="chapter-desc">
+                    <strong>Dangerous Goods</strong>
+                    <span>Page 1125 - Cabin Spill Drills</span>
+                  </div>
+                </li>
+                <li data-chapter="ch11">
+                  <span class="chapter-badge">CH 11</span>
+                  <div class="chapter-desc">
+                    <strong>Security</strong>
+                    <span>Page 1134 - Unruly Passenger threat levels</span>
+                  </div>
+                </li>
+                <li data-chapter="ch12">
+                  <span class="chapter-badge">CH 12</span>
+                  <div class="chapter-desc">
+                    <strong>Appendices</strong>
+                    <span>Page 1181 - Flight Logs & CDLs</span>
+                  </div>
+                </li>
               </ul>
             </div>
-            
-            <div class="manual-viewer card">
-              <div class="viewer-header">
-                <div class="viewer-actions-left">
-                  <button class="btn-micro" id="btn-manual-prev"><span class="material-symbols-rounded">arrow_back_ios</span></button>
-                  <span class="page-indicator">Page <span id="manual-page-num">1</span> of 1226</span>
-                  <button class="btn-micro" id="btn-manual-next"><span class="material-symbols-rounded">arrow_forward_ios</span></button>
-                  <input type="number" id="manual-jump-input" class="jump-input" placeholder="Page...">
-                  <button class="btn-micro" id="btn-manual-jump">Go</button>
+
+            <!-- Right Side: Full Screen integrated page viewer -->
+            <div class="card manual-page-card">
+              <div class="manual-page-header">
+                <div class="page-controls">
+                  <button class="btn btn-icon" onclick="loadManualPage(parseInt(document.getElementById('manual-page-num').innerText) - 1)">
+                    <span class="material-symbols-rounded">arrow_back</span>
+                  </button>
+                  <span class="page-indicator-text">Page <span id="manual-page-num">9</span> of 1226</span>
+                  <button class="btn btn-icon" onclick="loadManualPage(parseInt(document.getElementById('manual-page-num').innerText) + 1)">
+                    <span class="material-symbols-rounded">arrow_forward</span>
+                  </button>
                 </div>
-                <div class="viewer-actions-right">
-                  <button class="btn-micro" id="btn-manual-bookmark" title="Bookmark Page"><span class="material-symbols-rounded">bookmark</span></button>
-                  <button class="btn-micro" id="btn-manual-highlight" title="Highlight Selection"><span class="material-symbols-rounded">border_color</span></button>
+                
+                <div class="page-jump-box">
+                  <input type="number" id="manual-jump-input" class="jump-input" placeholder="Page...">
+                  <button id="btn-manual-jump" class="btn btn-tonal btn-sm">Jump</button>
                 </div>
               </div>
-              
-              <div class="manual-page-content" id="manual-page-content-box">
-                <!-- Page content load -->
-                <h3>Structure of Manual (SOM)</h3>
-                <p>The Cabin Safety Procedure Manual contains the following chapters...</p>
+
+              <!-- Page Display Body -->
+              <div class="manual-page-content-box" id="manual-page-content-box">
+                <!-- Page content will load dynamically -->
+              </div>
+            </div>
+
+          </div>
+        </section>
+        
+        <!-- ================= VIEW 5: SETTINGS & TOOLS ================= -->
+        <section id="view-settings" class="app-view">
+          
+          <!-- Sub-Tab Navigation inside Settings -->
+          <div class="tab-bar">
+            <button class="tab-btn active" id="tab-defects-config" onclick="toggleSettingsSubTab('defects-config')">
+              <span class="material-symbols-rounded">report_problem</span>
+              <span>Defects Log</span>
+            </button>
+            <button class="tab-btn" id="tab-notes-config" onclick="toggleSettingsSubTab('notes-config')">
+              <span class="material-symbols-rounded">mic</span>
+              <span>Voice Notes</span>
+            </button>
+            <button class="tab-btn" id="tab-checklists-config" onclick="toggleSettingsSubTab('checklists-config')">
+              <span class="material-symbols-rounded">fact_check</span>
+              <span>Checklists</span>
+            </button>
+            <button class="tab-btn" id="tab-calculators-config" onclick="toggleSettingsSubTab('calculators-config')">
+              <span class="material-symbols-rounded">calculate</span>
+              <span>Calculators</span>
+            </button>
+          </div>
+
+          <!-- Settings Sub-Tab A: Defect Logs -->
+          <div id="subtab-defects-config" class="subtab-settings-content active">
+            <div class="defects-layout">
+              <!-- Log Defect Card -->
+              <div class="card defect-entry-card">
+                <h3>Log Cabin Defect / CDL</h3>
+                <form id="defect-form" class="grid-form">
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="def-flight">Flight Number</label>
+                      <input type="text" id="def-flight" placeholder="e.g. G9-137" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="def-seat">Affected Seat / Row</label>
+                      <input type="text" id="def-seat" placeholder="e.g. 17F / Galley A" required>
+                    </div>
+                    <div class="form-group full-width">
+                      <label for="def-priority">Priority Level</label>
+                      <select id="def-priority">
+                        <option value="Low">Low - Cosmetic discrepancy</option>
+                        <option value="Medium">Medium - Seat swap necessary</option>
+                        <option value="High">High - Exit row affected / Safety risk</option>
+                      </select>
+                    </div>
+                    <div class="form-group full-width">
+                      <label for="def-description">Defect Details</label>
+                      <textarea id="def-description" rows="3" placeholder="Describe the cabin discrepancy details..." required></textarea>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-block">Log Defect</button>
+                </form>
+              </div>
+
+              <!-- List of defects -->
+              <div class="card defects-list-card">
+                <h3>Active Logged Defects</h3>
+                <div class="defects-list-container" id="defects-list-container">
+                  <!-- JS inserts here -->
+                </div>
               </div>
             </div>
           </div>
-        </section>
 
-
-        <!-- CHECKLISTS VIEW -->
-        <section id="view-checklists" class="app-view">
-          <div class="view-header">
-            <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-              <div>
-                <h2>Interactive Checklists</h2>
-                <p>Carry out mandatory safety checklists. Progress is automatically logged and saved offline.</p>
+          <!-- Settings Sub-Tab B: Voice Notes -->
+          <div id="subtab-notes-config" class="subtab-settings-content">
+            <div class="notes-layout">
+              <!-- Create Note Card -->
+              <div class="card note-creator-card">
+                <h3>Create Crew Note</h3>
+                <form id="note-form" class="grid-form">
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="note-title">Note Title</label>
+                      <input type="text" id="note-title" placeholder="e.g. Catering discrepancy" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="note-category">Category</label>
+                      <select id="note-category">
+                        <option value="Operational">Operational</option>
+                        <option value="Catering">Catering</option>
+                        <option value="Safety">Safety / Emergency</option>
+                        <option value="Briefing">Briefing note</option>
+                      </select>
+                    </div>
+                    <div class="form-group full-width">
+                      <label for="note-flight">Flight Ref (Optional)</label>
+                      <input type="text" id="note-flight" placeholder="e.g. G9-137">
+                    </div>
+                    <div class="form-group full-width">
+                      <label for="note-content">Note content</label>
+                      <textarea id="note-content" rows="4" placeholder="Type your note or click speech-to-text..." required></textarea>
+                    </div>
+                  </div>
+                  
+                  <div class="note-action-row">
+                    <button type="button" class="btn btn-tonal" id="btn-note-speech">
+                      <span class="material-symbols-rounded">mic</span> Speech to Text
+                    </button>
+                    <button type="button" class="btn btn-tonal" id="btn-clear-note">Clear</button>
+                    <button type="submit" class="btn btn-primary">Save Note</button>
+                  </div>
+                </form>
               </div>
-              <button class="btn btn-outline" id="btn-reset-checklists">
-                <span class="material-symbols-rounded">refresh</span> Reset for New Flight
+
+              <!-- List of notes -->
+              <div class="card notes-list-card">
+                <div class="notes-list-header">
+                  <h3>Stored Flight Notes</h3>
+                  <input type="text" id="notes-search" class="notes-search-input" placeholder="Filter notes...">
+                </div>
+                <div class="notes-list-container" id="notes-list-container">
+                  <!-- JS inserts here -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Settings Sub-Tab C: Interactive Checklists -->
+          <div id="subtab-checklists-config" class="subtab-settings-content">
+            <div class="checklists-grid">
+              
+              <!-- Checklist 1: Pre-flight -->
+              <div class="card checklist-card">
+                <div class="chk-card-header">
+                  <h3>1. Pre-flight Safety Checks</h3>
+                  <span class="progress-badge" id="prog-preflight">0/5</span>
+                </div>
+                <ul class="checklist-items-list" id="chk-preflight">
+                  <li><label><input type="checkbox"> Verify all cabin doors disarmed</label></li>
+                  <li><label><input type="checkbox"> Inspect emergency exits pathways</label></li>
+                  <li><label><input type="checkbox"> Check portable oxygen cylinders & pressure</label></li>
+                  <li><label><input type="checkbox"> Verify Halon fire extinguishers & pins</label></li>
+                  <li><label><input type="checkbox"> Ensure PBEs & fire gloves are secure</label></li>
+                </ul>
+              </div>
+
+              <!-- Checklist 2: Boarding -->
+              <div class="card checklist-card">
+                <div class="chk-card-header">
+                  <h3>2. Passenger Boarding Checks</h3>
+                  <span class="progress-badge" id="prog-boarding">0/4</span>
+                </div>
+                <ul class="checklist-items-list" id="chk-boarding">
+                  <li><label><input type="checkbox"> Welcome passengers at demo positions</label></li>
+                  <li><label><input type="checkbox"> Conduct row counts (R1 & R4C)</label></li>
+                  <li><label><input type="checkbox"> Verify exit row able-bodied passengers</label></li>
+                  <li><label><input type="checkbox"> Ensure overhead stowage is locked</label></li>
+                </ul>
+              </div>
+
+              <!-- Checklist 3: Cabin Doors -->
+              <div class="card checklist-card">
+                <div class="chk-card-header">
+                  <h3>3. Door Arming Checklist</h3>
+                  <span class="progress-badge" id="prog-doors">0/4</span>
+                </div>
+                <ul class="checklist-items-list" id="chk-doors">
+                  <li><label><input type="checkbox"> Receive arming announcement command</label></li>
+                  <li><label><input type="checkbox"> Arm LHS & RHS doors securely</label></li>
+                  <li><label><input type="checkbox"> Ask witness crew: "Confirm Armed"</label></li>
+                  <li><label><input type="checkbox"> Perform physical cross-check verification</label></li>
+                </ul>
+              </div>
+
+              <!-- Checklist 4: Cabin Secure -->
+              <div class="card checklist-card">
+                <div class="chk-card-header">
+                  <h3>4. Cabin Secure Checklist</h3>
+                  <span class="progress-badge" id="prog-secure">0/4</span>
+                </div>
+                <ul class="checklist-items-list" id="chk-secure">
+                  <li><label><input type="checkbox"> Verify seatbelts fastened (pax & infants)</label></li>
+                  <li><label><input type="checkbox"> Tray tables locked & seats fully upright</label></li>
+                  <li><label><input type="checkbox"> Ensure galley containers locked & carts latched</label></li>
+                  <li><label><input type="checkbox"> Verify lavatories vacant & locked</label></li>
+                </ul>
+              </div>
+
+            </div>
+            
+            <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+              <button id="btn-reset-checklists" class="btn btn-tonal">
+                <span class="material-symbols-rounded">restart_alt</span> Reset All Flight Checklists
               </button>
             </div>
           </div>
-          
-          <div class="checklists-grid">
-            <div class="checklist-card card">
-              <div class="chk-header">
-                <h3>Pre-Flight Briefing & Duties</h3>
-                <span class="chk-progress" id="prog-preflight">0/4 Completed</span>
-              </div>
-              <ul class="chk-items-list" id="chk-preflight">
-                <li><label><input type="checkbox"> Verify all crew documents are valid</label></li>
-                <li><label><input type="checkbox"> Conduct safety knowledge checks</label></li>
-                <li><label><input type="checkbox"> Conduct joint crew briefing</label></li>
-                <li><label><input type="checkbox"> Perform safety equipment checks on aircraft</label></li>
-              </ul>
-            </div>
 
-            <div class="checklist-card card">
-              <div class="chk-header">
-                <h3>Passenger Boarding Phase</h3>
-                <span class="chk-progress" id="prog-boarding">0/4 Completed</span>
-              </div>
-              <ul class="chk-items-list" id="chk-boarding">
-                <li><label><input type="checkbox"> Welcome passengers at demo stations</label></li>
-                <li><label><input type="checkbox"> Identify and brief special passengers (SCPs)</label></li>
-                <li><label><input type="checkbox"> Monitor cabin bag stowage & exits</label></li>
-                <li><label><input type="checkbox"> Confirm final headcount tallies with loadsheet</label></li>
-              </ul>
-            </div>
-
-            <div class="checklist-card card">
-              <div class="chk-header">
-                <h3>Prior to Door Closing & Taxi</h3>
-                <span class="chk-progress" id="prog-doors">0/4 Completed</span>
-              </div>
-              <ul class="chk-items-list" id="chk-doors">
-                <li><label><input type="checkbox"> CS makes 'Boarding Completed' PA</label></li>
-                <li><label><input type="checkbox"> Close all overhead bins & curtains</label></li>
-                <li><label><input type="checkbox"> CS obtains Captain permission and closes door</label></li>
-                <li><label><input type="checkbox"> Arm doors and cross-check on CS command</label></li>
-              </ul>
-            </div>
-
-            <div class="checklist-card card">
-              <div class="chk-header">
-                <h3>Cabin Secure for Takeoff</h3>
-                <span class="chk-progress" id="prog-secure">0/4 Completed</span>
-              </div>
-              <ul class="chk-items-list" id="chk-secure">
-                <li><label><input type="checkbox"> Perform manual/video safety demonstration</label></li>
-                <li><label><input type="checkbox"> Verify galleys secure, curtains tied back</label></li>
-                <li><label><input type="checkbox"> Check all passenger seat belts, seats upright</label></li>
-                <li><label><input type="checkbox"> Secure cabin crew stations and sit for takeoff</label></li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-
-        <!-- CALCULATORS VIEW -->
-        <section id="view-calculators" class="app-view">
-          <div class="view-header">
-            <h2>Cabin Crew Calculators</h2>
-            <p>Quick operational tools for duty limits, rest periods, currency, and boarding timers.</p>
-          </div>
-          
-          <div class="calculators-grid">
-            
-            <!-- Rest Time Calculator -->
-            <div class="calculator-card card">
-              <h3>Flight Rest Calculator</h3>
-              <p>Divide flight cruise phase rest breaks equally among crew.</p>
-              <div class="calc-form">
-                <div class="form-group">
-                  <label for="rest-flight-duration">Total Cruise Duration (Hrs)</label>
-                  <input type="number" id="rest-flight-duration" placeholder="e.g. 5.5" step="0.1">
-                </div>
-                <div class="form-group">
-                  <label for="rest-shifts">Number of Crew Shifts</label>
-                  <input type="number" id="rest-shifts" value="2">
-                </div>
-                <button class="btn btn-primary" id="btn-calc-rest">Calculate Breaks</button>
-              </div>
-              <div class="calc-result" id="rest-calc-result"></div>
-            </div>
-
-            <!-- Currency Converter (Rupees Supported) -->
-            <div class="calculator-card card">
-              <h3>In-flight Currency Converter</h3>
-              <p>Quick conversion based on company standard exchange rates.</p>
-              <div class="calc-form">
-                <div class="form-group">
-                  <label for="curr-amount">Amount</label>
-                  <input type="number" id="curr-amount" placeholder="e.g. 100">
-                </div>
-                <div class="form-group">
-                  <label for="curr-from">From</label>
-                  <select id="curr-from">
-                    <option value="AED">AED (Emirati Dirham)</option>
-                    <option value="SAR">SAR (Saudi Riyal)</option>
-                    <option value="INR">INR (Indian Rupee)</option>
-                    <option value="USD">USD (US Dollar)</option>
-                    <option value="EUR">EUR (Euro)</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="curr-to">To</label>
-                  <select id="curr-to">
-                    <option value="INR">INR (Indian Rupee)</option>
-                    <option value="SAR">SAR (Saudi Riyal)</option>
-                    <option value="AED">AED (Emirati Dirham)</option>
-                    <option value="USD">USD (US Dollar)</option>
-                    <option value="EUR">EUR (Euro)</option>
-                  </select>
-                </div>
-                <button class="btn btn-primary" id="btn-calc-curr">Convert Currency</button>
-              </div>
-              <div class="calc-result" id="curr-calc-result"></div>
-            </div>
-
-            <!-- Boarding Timer -->
-            <div class="calculator-card card">
-              <h3>Boarding & Cleaning Timers</h3>
-              <p>Benchmark timers for aircraft boarding and outstation cleaning.</p>
-              <div class="timer-display-group">
-                <div class="timer-box">
-                  <h4>Boarding Timer</h4>
-                  <div class="timer-digits" id="timer-boarding-digits">20:00</div>
-                  <div class="timer-controls">
-                    <button class="btn btn-micro text-green" id="btn-timer-board-start">Start</button>
-                    <button class="btn btn-micro text-red" id="btn-timer-board-stop">Stop</button>
+          <!-- Settings Sub-Tab D: Calculators -->
+          <div id="subtab-calculators-config" class="subtab-settings-content">
+            <div class="calculators-grid">
+              
+              <!-- Rest Break Calc -->
+              <div class="card calc-card">
+                <h3>Cruise Rest Break Divider</h3>
+                <div class="calc-form">
+                  <div class="form-group">
+                    <label for="rest-flight-duration">Total Cruise Duration (Hours)</label>
+                    <input type="number" id="rest-flight-duration" placeholder="e.g. 4.5" step="0.1">
                   </div>
+                  <div class="form-group">
+                    <label for="rest-shifts">Number of Rest shifts</label>
+                    <input type="number" id="rest-shifts" placeholder="e.g. 3">
+                  </div>
+                  <button id="btn-calc-rest" class="btn btn-tonal btn-block">Calculate Breaks</button>
+                  <div class="calc-result" id="rest-calc-result">Calculations will appear here.</div>
                 </div>
-                <div class="timer-box">
-                  <h4>Cleaning Timer</h4>
-                  <div class="timer-digits" id="timer-cleaning-digits">08:00</div>
-                  <div class="timer-controls">
-                    <button class="btn btn-micro text-green" id="btn-timer-clean-start">Start</button>
-                    <button class="btn btn-micro text-red" id="btn-timer-clean-stop">Stop</button>
+              </div>
+
+              <!-- Currency Converter -->
+              <div class="card calc-card">
+                <h3>In-flight Currency Converter</h3>
+                <div class="calc-form">
+                  <div class="form-group">
+                    <label for="curr-amount">Amount</label>
+                    <input type="number" id="curr-amount" placeholder="Enter amount..." step="0.01">
+                  </div>
+                  <div class="form-grid-row">
+                    <div class="form-group">
+                      <label for="curr-from">From</label>
+                      <select id="curr-from">
+                        <option value="AED">AED - Dirhams</option>
+                        <option value="SAR">SAR - Riyals</option>
+                        <option value="USD">USD - Dollars</option>
+                        <option value="EUR">EUR - Euros</option>
+                        <option value="INR">INR - Rupees</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="curr-to">To</label>
+                      <select id="curr-to">
+                        <option value="SAR">SAR - Riyals</option>
+                        <option value="AED">AED - Dirhams</option>
+                        <option value="USD">USD - Dollars</option>
+                        <option value="EUR">EUR - Euros</option>
+                        <option value="INR">INR - Rupees</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button id="btn-calc-currency" class="btn btn-tonal btn-block">Convert Currency</button>
+                  <div class="calc-result" id="curr-calc-result">Conversion rates based on offline base.</div>
+                </div>
+              </div>
+
+              <!-- In-flight Timers -->
+              <div class="card calc-card">
+                <h3>In-flight Operation Timers</h3>
+                <div class="timers-list">
+                  <div class="timer-item">
+                    <span>Boarding Duration (20:00)</span>
+                    <div class="timer-digits" id="timer-boarding-digits">20:00</div>
+                    <div class="timer-controls">
+                      <button class="btn-micro" id="btn-timer-board-start">Start</button>
+                      <button class="btn-micro" id="btn-timer-board-stop">Reset</button>
+                    </div>
+                  </div>
+                  <div class="timer-item">
+                    <span>Transit Cabin Clean (08:00)</span>
+                    <div class="timer-digits" id="timer-cleaning-digits">08:00</div>
+                    <div class="timer-controls">
+                      <button class="btn-micro" id="btn-timer-clean-start">Start</button>
+                      <button class="btn-micro" id="btn-timer-clean-stop">Reset</button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-          </div>
-        </section>
-
-
-        <!-- CABIN DEFECT LOG VIEW -->
-        <section id="view-defects" class="app-view">
-          <div class="view-header">
-            <h2>Cabin Defect Log</h2>
-            <p>Log equipment/cabin damage. Add seat descriptions, set priorities, and export reports for engineers.</p>
-          </div>
-          
-          <div class="defects-layout">
-            <div class="defect-form-card card">
-              <h3>Report New Defect</h3>
-              <form id="defect-form">
-                <div class="form-group">
-                  <label for="def-flight">Flight No</label>
-                  <input type="text" id="def-flight" placeholder="G9-137" required>
-                </div>
-
-                <div class="form-group">
-                  <label for="def-seat">Seat / Location</label>
-                  <input type="text" id="def-seat" placeholder="e.g. 12C / AFT Galley Oven" required>
-                </div>
-
-                <div class="form-group">
-                  <label for="def-priority">Priority</label>
-                  <select id="def-priority" required>
-                    <option value="Low">Low (Cosmetic/Convenience)</option>
-                    <option value="Medium">Medium (Broken Tray Table/Seat Recline)</option>
-                    <option value="High">High (Safety Risk / Broken Crew Seat)</option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label for="def-description">Description</label>
-                  <textarea id="def-description" rows="4" placeholder="Detail the damage here..." required></textarea>
-                </div>
-
-                <div class="form-group">
-                  <label>Add Media Reference</label>
-                  <div class="media-upload-area">
-                    <span class="material-symbols-rounded">photo_camera</span>
-                    <span>Upload Defect Photo</span>
-                  </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-block">Log Defect</button>
-              </form>
-            </div>
-            
-            <div class="defects-list-card card">
-              <h3>Logged Defects Records</h3>
-              <div class="defects-list-container" id="defects-list-container">
-                <!-- Javascript will pull this from localStorage -->
-              </div>
             </div>
           </div>
+
         </section>
 
       </div>
     </main>
+
+    <!-- Mobile Bottom Navigation Bar (Visible only on Smartphones < 768px) -->
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-view="dashboard">
+        <span class="material-symbols-rounded">dashboard</span>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-btn" data-view="report">
+        <span class="material-symbols-rounded">flight_takeoff</span>
+        <span>Flights</span>
+      </button>
+      <button class="nav-btn" data-view="chat">
+        <span class="material-symbols-rounded">chat_bubble</span>
+        <span>AI Chat</span>
+      </button>
+      <button class="nav-btn" data-view="manuals">
+        <span class="material-symbols-rounded">library_books</span>
+        <span>Manual</span>
+      </button>
+      <button class="nav-btn" data-view="settings">
+        <span class="material-symbols-rounded">settings</span>
+        <span>Settings</span>
+      </button>
+    </nav>
+
   </div>
 
   <script src="app.js"></script>

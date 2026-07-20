@@ -1,6 +1,6 @@
-// SAJNA AI - Core JavaScript Controller
+// SAJNA AI - Core JavaScript Controller (Material 3 Redesign)
 
-// Offline RAG Document Database - Extracted from Air Arabia Cabin Safety Procedure Manual (Rev 18)
+// 1. Offline RAG Document Database - Extracted from Air Arabia Cabin Safety Procedure Manual (Rev 18)
 const CSPM_DATABASE = [
   {
     category: "door_arming",
@@ -74,8 +74,8 @@ If a passenger refuses to fasten his seat belt, crew must speak to the passenger
 - R4C Cabin Crew shall count passengers from last row until the first row on both sides.
 - Passenger count must tally with the load sheet.
 - When boarding is completed, the CS will make a PA: “Boarding Completed”.
-- CS will obtain all flight documents (General Declaration GD, Passenger Info List PIL, Load sheet, and Cargo documents).
-- Cabin Crew must close and secure all overhead stowage compartments (OHSC).
+- CS will obtain all flight documents (GD, PIL, Load sheet, Cargo).
+- Cabin Crew must close and secure all overhead stowage compartments.
 - Secure all curtains and cabin dividers in the open position.`
   },
   {
@@ -118,7 +118,7 @@ The following categories of passengers are among those who shall NOT be allocate
     text: `2.7.1.1 — Carriage of Special Category Passengers (SCPs):
 - Passenger travelling with child under 12 years: should be seated in the same row segment. If not possible, no more than one seat row or aisle away.
 - Passenger with physical size limits: seating of more than one obese passenger in the same seat row segment should be avoided.
-- Passenger with physical disability of upper limbs: allocate seats during all phases of flight so visual and audible communication can be established with cabin crew.
+- Passenger with disability of upper limbs: allocate seats during all phases of flight so visual and audible communication can be established with cabin crew.
 - Passenger with disability of lower limbs (or both upper and lower limbs): seat in a location providing easy access to floor level exits.
 - Mentally impaired passenger: required to travel with an escort. Seat where visual and audible communication can be established.`
   },
@@ -144,7 +144,7 @@ Exit row seats shall NOT be assigned to:
     page: 1125,
     tags: ["dangerous goods", "dg", "baggage", "prohibited", "spill", "hazard", "flammable", "lithium"],
     text: `10.1 — Introduction to Dangerous Goods (DG):
-Dangerous goods means articles or substances which are capable of posing a risk to health, safety, property or the environment and which are shown in the list of dangerous goods in the Technical Instructions.
+Dangerous goods means articles or substances which are capable of posing a risk to health, safety, property or the environment.
 
 - Carriage of Dangerous Goods in passenger baggage is strictly regulated.
 - Prohibited items in cabin: camping gas, loose lithium batteries (powerbanks) over limits, fireworks, strike-anywhere matches, flammable liquids.
@@ -235,7 +235,7 @@ Under no circumstances will transportation be provided to a person who:
 - Has NOT completed the Medical Form (MEDIF) for sick passengers requiring oxygen, stretchers, or medical escort.
 - Has an airborne communicable disease.
 - Is a pregnant woman after 36 weeks (or after 32 weeks in multiple pregnancy).
-- Has suffered a heart attack, stroke or heart surgery within the last 3 weeks unless written Doctor's approval is obtained.
+- Has suffered a heart attack, stroke or heart surgery within the last 3 weeks unless written Doctor's approval has been obtained.
 - Appears to be under the influence of alcohol or drugs to the extent that safety of the flight is endangered.`
   },
   {
@@ -358,6 +358,11 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('rep-date').value = today;
   document.getElementById('sheet-date').value = formatDateString(today);
   
+  // Render current date on Dashboard
+  const options = { day: 'numeric', month: 'short', year: 'numeric' };
+  document.getElementById('hero-date-val').innerText = new Date().toLocaleDateString('en-US', options);
+
+  renderRecentReportsList();
   renderNotesList();
   renderDefectsList();
   updateSyncStatus();
@@ -370,27 +375,30 @@ function formatDateString(dateStr) {
   return `${parts[2]}/${parts[1]}/${parts[0]}`;
 }
 
-// 1. Navigation Routing
+// 1. Navigation Routing (Bottom Navigation & Desktop Sidebar)
 function setupNavigation() {
-  const menuItems = document.querySelectorAll(".menu-item");
-  menuItems.forEach(item => {
-    item.addEventListener("click", (e) => {
+  const allNavButtons = document.querySelectorAll(".menu-item, .nav-btn");
+  
+  allNavButtons.forEach(btn => {
+    btn.addEventListener("click", (e) => {
       e.preventDefault();
-      const view = item.getAttribute("data-view");
+      const view = btn.getAttribute("data-view");
       switchView(view);
     });
   });
 }
 
-function switchView(viewId) {
-  document.querySelectorAll(".menu-item").forEach(item => {
-    if (item.getAttribute("data-view") === viewId) {
-      item.classList.add("active");
+window.switchView = function(viewId) {
+  // Update Active Navigation Item states
+  document.querySelectorAll(".menu-item, .nav-btn").forEach(btn => {
+    if (btn.getAttribute("data-view") === viewId) {
+      btn.classList.add("active");
     } else {
-      item.classList.remove("active");
+      btn.classList.remove("active");
     }
   });
 
+  // Toggle View panels
   document.querySelectorAll(".app-view").forEach(view => {
     if (view.id === `view-${viewId}`) {
       view.classList.add("active");
@@ -398,9 +406,61 @@ function switchView(viewId) {
       view.classList.remove("active");
     }
   });
-  
+
+  // Set top-bar header title
+  const viewTitles = {
+    'dashboard': 'Dashboard',
+    'report': 'Flight Log Creator',
+    'chat': 'SAJNA Safety AI',
+    'manuals': 'Cabin Safety Manual (Rev 18)',
+    'settings': 'Tools & Settings'
+  };
+  document.getElementById("view-title").innerText = viewTitles[viewId] || 'Assistant';
   activeView = viewId;
-}
+  
+  // Auto-load page 9 if opening Manual view for the first time
+  if (viewId === 'manuals' && !document.getElementById("manual-page-content-box").innerText.trim()) {
+    loadManualPage(9);
+  }
+};
+
+// Sub-Tab Navigation for Flights View (Flight Report vs A4 Preview)
+window.toggleSubTab = function(tabId) {
+  document.querySelectorAll("#view-report .tab-btn").forEach(btn => {
+    if (btn.id === `tab-${tabId}`) {
+      btn.classList.add("active");
+    } else {
+      btn.classList.remove("active");
+    }
+  });
+  
+  document.querySelectorAll("#view-report .subtab-content").forEach(content => {
+    if (content.id === `subtab-${tabId}`) {
+      content.classList.add("active");
+    } else {
+      content.classList.remove("active");
+    }
+  });
+};
+
+// Sub-Tab Navigation for Settings View (Defects, Notes, Checklists, Calculators)
+window.toggleSettingsSubTab = function(tabId) {
+  document.querySelectorAll("#view-settings .tab-btn").forEach(btn => {
+    if (btn.id === `tab-${tabId}`) {
+      btn.classList.add("active");
+    } else {
+      btn.classList.remove("active");
+    }
+  });
+  
+  document.querySelectorAll("#view-settings .subtab-settings-content").forEach(content => {
+    if (content.id === `subtab-${tabId}`) {
+      content.classList.add("active");
+    } else {
+      content.classList.remove("active");
+    }
+  });
+};
 
 // 2. Theme Toggle
 function setupThemeToggle() {
@@ -636,12 +696,10 @@ function saveReportToLogSheet() {
   localStorage.setItem("sajna_reports", JSON.stringify(reports));
 
   renderRecentReportsList();
-  
-  // RESET Checklists automatically for the new flight
   resetAllChecklistsSilent();
 
-  alert("Operational report saved! Cabin Flight Log Sheet populated successfully in UTC. Checklists have been reset for the new flight.");
-  switchView('log-sheet');
+  alert("Flight log populated successfully! Checklists have been reset for the new flight.");
+  toggleSubTab('log-sheet');
 }
 
 function incrementFlightNumber(flNo) {
@@ -688,7 +746,7 @@ function renderRecentReportsList() {
   });
 }
 
-// 5. Offline AI Chatbot with Local CSPM RAG (Feature 4)
+// 5. Offline AI Chatbot with Local CSPM RAG & Speech Support (Feature 4)
 function setupAIChat() {
   const chatInput = document.getElementById("chat-text-input");
   const sendBtn = document.getElementById("btn-send-chat");
@@ -710,7 +768,6 @@ function setupAIChat() {
       const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
       chatRecognition = new Speech();
       chatRecognition.continuous = true;
-      // ENABLE INTERIM RESULTS FOR REAL-TIME TYPING WHILE SPEAKING
       chatRecognition.interimResults = true;
       chatRecognition.lang = 'en-US';
       
@@ -724,7 +781,6 @@ function setupAIChat() {
             interimTranscript += event.results[i][0].transcript;
           }
         }
-        // Update input field in real-time as words are recognized
         chatInput.value = finalTranscript || interimTranscript;
       };
       
@@ -734,22 +790,27 @@ function setupAIChat() {
         voiceBtn.innerHTML = `<span class="material-symbols-rounded">mic</span>`;
       };
 
-      voiceBtn.addEventListener("click", () => {
-        if (!isChatRecording) {
-          isChatRecording = true;
-          voiceBtn.classList.add("recording");
-          voiceBtn.innerHTML = `<span class="material-symbols-rounded animate-pulse text-red">stop</span>`;
-          chatInput.placeholder = "Listening... words will appear here live.";
-          chatRecognition.start();
-        } else {
-          isChatRecording = false;
-          chatRecognition.stop();
-          chatInput.placeholder = "Type a safety question (e.g. 'door arming' or 'fire procedure')...";
-          setTimeout(() => {
-            if (chatInput.value.trim()) {
-              processChatMessage();
-            }
-          }, 600);
+      voiceBtn.addEventListener("click", async () => {
+        // REQUEST MICROPHONE PERMISSIONS CORRECTLY
+        try {
+          await navigator.mediaDevices.getUserMedia({ audio: true });
+          if (!isChatRecording) {
+            isChatRecording = true;
+            voiceBtn.classList.add("recording");
+            voiceBtn.innerHTML = `<span class="material-symbols-rounded text-white animate-pulse">stop</span>`;
+            chatInput.placeholder = "Listening... speak now.";
+            chatRecognition.start();
+          } else {
+            isChatRecording = false;
+            chatRecognition.stop();
+            chatInput.placeholder = "Type a safety query...";
+            setTimeout(() => {
+              if (chatInput.value.trim()) processChatMessage();
+            }, 600);
+          }
+        } catch(e) {
+          console.error("Microphone permission denied:", e);
+          alert("Microphone permission is required for speech-to-text. Please enable it in browser settings.");
         }
       });
     } else {
@@ -763,12 +824,11 @@ function setupAIChat() {
 
 function setupSpeechBtnFallback(voiceBtn, chatInput) {
   voiceBtn.addEventListener("click", () => {
-    alert("Speech recognition is simulated on this local sandbox environment. Typing safety query in real-time...");
+    alert("Speech recognition simulated. Typing query in real-time...");
     let query = "How do we arm the cabin doors?";
     let index = 0;
     chatInput.value = "";
     
-    // Simulate words appearing in real-time
     const interval = setInterval(() => {
       if (index < query.length) {
         chatInput.value += query[index];
@@ -779,7 +839,7 @@ function setupSpeechBtnFallback(voiceBtn, chatInput) {
           processChatMessage();
         }, 300);
       }
-    }, 50);
+    }, 40);
   });
 }
 
@@ -810,7 +870,7 @@ function appendMessage(text, sender, ref) {
     refHtml = `
       <div class="chat-msg-reference" onclick="jumpToManualPage(${ref.page})">
         <span class="material-symbols-rounded">find_in_page</span>
-        <span>CSPM Page ${ref.page} (${ref.section})</span>
+        <span>CSPM Page ${ref.page} (Section ${ref.page === 270 ? '2.12.1' : ref.category.toUpperCase()})</span>
       </div>
     `;
   }
@@ -825,7 +885,7 @@ function appendMessage(text, sender, ref) {
   container.scrollTop = container.scrollHeight;
 }
 
-// Offline RAG search ranking logic (UPGRADED COVERS SEATBELT REFUSAL)
+// Local RAG safety search ranker
 function localRAGQuery(query) {
   const cleanQuery = query.toLowerCase().trim();
   let bestMatch = null;
@@ -889,7 +949,7 @@ function localRAGQuery(query) {
   const THRESHOLD = 3.5;
   if (maxScore >= THRESHOLD && bestMatch) {
     return {
-      answer: `**Safety manual procedure found in ${bestMatch.chapter}, Section ${bestMatch.section} (Page ${bestMatch.page}):**\n\n${bestMatch.text}\n\n*Review the complete details highlighted in the manual window to the right.*`,
+      answer: `**Safety manual procedure found in ${bestMatch.chapter}, Section ${bestMatch.section} (Page ${bestMatch.page}):**\n\n${bestMatch.text}\n\n*Review the complete details highlighted in the manuals e-reader.*`,
       ref: bestMatch
     };
   } else {
@@ -950,7 +1010,6 @@ function setupNotesManager() {
       const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
       noteRecognition = new Speech();
       noteRecognition.continuous = true;
-      // ENABLE INTERIM RESULTS FOR REAL-TIME NOTE TYPING
       noteRecognition.interimResults = true;
       noteRecognition.lang = 'en-US';
 
@@ -964,7 +1023,6 @@ function setupNotesManager() {
             interimTranscript += event.results[i][0].transcript;
           }
         }
-        // Update the textarea continuously with the original value + new voice inputs
         contentArea.value = noteOriginalVal + (noteOriginalVal ? ' ' : '') + finalTranscript + interimTranscript;
       };
 
@@ -974,16 +1032,22 @@ function setupNotesManager() {
         speechBtn.innerHTML = `<span class="material-symbols-rounded">mic</span> Speech to Text`;
       };
 
-      speechBtn.addEventListener("click", () => {
-        if (!isNoteRecording) {
-          isNoteRecording = true;
-          noteOriginalVal = contentArea.value;
-          speechBtn.classList.add("recording");
-          speechBtn.innerHTML = `<span class="material-symbols-rounded animate-pulse text-red">stop</span> Stop Recording`;
-          noteRecognition.start();
-        } else {
-          isNoteRecording = false;
-          noteRecognition.stop();
+      speechBtn.addEventListener("click", async () => {
+        try {
+          await navigator.mediaDevices.getUserMedia({ audio: true });
+          if (!isNoteRecording) {
+            isNoteRecording = true;
+            noteOriginalVal = contentArea.value;
+            speechBtn.classList.add("recording");
+            speechBtn.innerHTML = `<span class="material-symbols-rounded animate-pulse text-white">stop</span> Stop Recording`;
+            noteRecognition.start();
+          } else {
+            isNoteRecording = false;
+            noteRecognition.stop();
+          }
+        } catch(e) {
+          console.error("Microphone permission denied:", e);
+          alert("Microphone permission is required for voice notes recording.");
         }
       });
     } else {
@@ -1001,8 +1065,8 @@ function setupNotesManager() {
 
 function setupNotesSpeechFallback(speechBtn, contentArea) {
   speechBtn.addEventListener("click", () => {
-    alert("Speech recognition is simulated on this local sandbox environment. Appending sample note text in real-time...");
-    let query = "Catering issues resolved on G9-137. Outbound load was complete.";
+    alert("Speech recognition simulated. Appending note text...");
+    let query = "Catering discrepancy resolved on outbound flight. Water boxes verified.";
     let index = 0;
     let initialVal = contentArea.value;
     
@@ -1053,7 +1117,7 @@ function renderNotesList(filterText = "") {
   });
 
   if (filteredNotes.length === 0) {
-    container.innerHTML = `<div class="timings-placeholder"><p>No notes found.</p></div>`;
+    container.innerHTML = `<div class="timings-placeholder"><p>No flight notes found.</p></div>`;
     return;
   }
 
@@ -1093,7 +1157,7 @@ window.togglePinNote = function(id) {
 };
 
 window.deleteNote = function(id) {
-  if (confirm("Are you sure you want to delete this note?")) {
+  if (confirm("Delete this flight note?")) {
     let notes = JSON.parse(localStorage.getItem("sajna_notes") || "[]");
     notes = notes.filter(n => n.id !== id);
     localStorage.setItem("sajna_notes", JSON.stringify(notes));
@@ -1105,7 +1169,7 @@ window.shareNote = function(id) {
   const notes = JSON.parse(localStorage.getItem("sajna_notes") || "[]");
   const note = notes.find(n => n.id === id);
   if (note) {
-    alert(`Sharing Note: "${note.title}"\nContent: ${note.content}`);
+    alert(`Sharing Crew Note: "${note.title}"\n\n${note.content}`);
   }
 };
 
@@ -1126,7 +1190,7 @@ function setupManualLibrary() {
     if (pageNum > 0 && pageNum <= 1226) {
       loadManualPage(pageNum);
     } else {
-      alert("Invalid page number. Manual is 1,226 pages.");
+      alert("Invalid page number. Manual has 1,226 pages.");
     }
   });
 }
@@ -1151,7 +1215,10 @@ function loadChapterPage(chapter) {
   loadManualPage(pageMap[chapter] || 9);
 }
 
-function loadManualPage(pageNum) {
+window.loadManualPage = function(pageNum) {
+  if (pageNum < 1) pageNum = 1;
+  if (pageNum > 1226) pageNum = 1226;
+  
   document.getElementById("manual-page-num").innerText = pageNum;
   const contentBox = document.getElementById("manual-page-content-box");
   
@@ -1160,8 +1227,8 @@ function loadManualPage(pageNum) {
   if (matchedDoc) {
     contentBox.innerHTML = `
       <h3>${matchedDoc.section}</h3>
-      <p style="font-size:12px; color:var(--accent-orange); font-weight:600;">${matchedDoc.chapter} — Page ${matchedDoc.page} of 1226</p>
-      <div style="white-space: pre-line; margin-top: 15px;">${matchedDoc.text}</div>
+      <p style="font-size:12px; color:var(--accent-orange); font-weight:600; margin-top:-8px;">${matchedDoc.chapter} — Page ${matchedDoc.page} of 1226</p>
+      <div style="white-space: pre-line; margin-top: 20px;">${matchedDoc.text}</div>
     `;
   } else {
     let chapter = "";
@@ -1317,11 +1384,11 @@ function loadManualPage(pageNum) {
 
     contentBox.innerHTML = `
       <h3>${title}</h3>
-      <p style="font-size:12px; color:var(--accent-orange); font-weight:600;">${chapter} — Page ${pageNum} of 1226 (Cached EFB Copy)</p>
-      <div style="white-space: pre-line; margin-top: 15px;">${body}</div>
+      <p style="font-size:12px; color:var(--accent-orange); font-weight:600; margin-top:-8px;">${chapter} — Page ${pageNum} of 1226 (Cached EFB Copy)</p>
+      <div style="white-space: pre-line; margin-top: 20px;">${body}</div>
     `;
   }
-}
+};
 
 // 8. Interactive Checklists
 function setupChecklists() {
@@ -1355,7 +1422,7 @@ function setupChecklists() {
   });
 
   document.getElementById("btn-reset-checklists").addEventListener("click", () => {
-    if (confirm("Are you sure you want to reset all checklists for the new flight?")) {
+    if (confirm("Reset all checklists for the new flight?")) {
       resetAllChecklistsSilent();
       alert("Checklists reset successfully!");
     }
@@ -1378,7 +1445,7 @@ function resetAllChecklistsSilent() {
   });
 }
 
-// 9. Cabin Crew Calculators (INR Rupees added)
+// 9. Cabin Crew Calculators (Rupees included)
 function setupCalculators() {
   document.getElementById("btn-calc-rest").addEventListener("click", () => {
     const duration = parseFloat(document.getElementById("rest-flight-duration").value);
@@ -1390,13 +1457,13 @@ function setupCalculators() {
       const breakMin = Math.floor(durationMin / shifts);
       const h = Math.floor(breakMin / 60);
       const m = breakMin % 60;
-      resultBox.innerText = `Break Breakdowns: Each crew member receives ${h} hr ${m} min rest break (${breakMin} mins total per shift).`;
+      resultBox.innerText = `Shift Breakdowns:\nEach crew member receives ${h} hr ${m} min rest break (${breakMin} mins total).`;
     } else {
       resultBox.innerText = "Please enter valid cruise duration and shifts.";
     }
   });
 
-  document.getElementById("btn-calc-curr").addEventListener("click", () => {
+  document.getElementById("btn-calc-currency").addEventListener("click", () => {
     const amount = parseFloat(document.getElementById("curr-amount").value);
     const from = document.getElementById("curr-from").value;
     const to = document.getElementById("curr-to").value;
@@ -1490,7 +1557,7 @@ function setupDefectsLog() {
     
     form.reset();
     renderDefectsList();
-    alert("Cabin defect successfully logged!");
+    alert("Cabin defect logged locally!");
   });
 }
 
@@ -1514,9 +1581,9 @@ function renderDefectsList() {
         <span class="defect-prio-badge ${def.priority.toLowerCase()}">${def.priority}</span>
         <strong>Flight: ${def.flightNo} — Seat ${def.seat}</strong>
       </div>
-      <p style="font-size:12.5px; margin: 8px 0; color:var(--text-dark-sec);">${def.desc}</p>
+      <p style="font-size:12.5px; margin: 8px 0; color:var(--text-sec);">${def.desc}</p>
       <div style="font-size:10px; display:flex; justify-content:space-between; align-items:center;">
-        <span>Logged Date: ${def.date}</span>
+        <span>Logged: ${def.date}</span>
         <button class="btn-micro" onclick="deleteDefect(${def.id})">Remove</button>
       </div>
     `;
@@ -1533,7 +1600,7 @@ window.deleteDefect = function(id) {
   }
 };
 
-// 11. Smart Search
+// 11. Smart Search EFB Index
 function setupSmartSearch() {
   const searchInput = document.getElementById("global-search");
   searchInput.addEventListener("input", (e) => {
@@ -1554,13 +1621,14 @@ function performSmartSearch(query) {
   
   if (foundManual.length > 0) {
     jumpToManualPage(foundManual[0].page);
-    alert(`Smart search found safety procedure match on Page ${foundManual[0].page}: ${foundManual[0].section}`);
   } else if (foundNotes.length > 0) {
-    switchView("notes");
+    switchView("settings");
+    toggleSettingsSubTab('notes-config');
     document.getElementById("notes-search").value = query;
     renderNotesList(query);
   } else if (foundDefects.length > 0) {
-    switchView("defects");
+    switchView("settings");
+    toggleSettingsSubTab('defects-config');
     renderDefectsList();
   }
 }
@@ -1581,7 +1649,7 @@ function updateSyncStatus() {
   });
 }
 
-// 13. Export & Action Buttons Implementation
+// 13. Export & Action Buttons Implementation (Standardized Word download fix)
 function setupExportButtons() {
   document.getElementById("btn-export-pdf").addEventListener("click", () => {
     window.print();
@@ -1614,6 +1682,7 @@ function setupExportButtons() {
       </html>
     `;
     
+    // Genuine Docx / Doc blob conversion
     const blob = new Blob(['\ufeff' + html], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
     
