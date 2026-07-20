@@ -24,9 +24,19 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Recreate Android platform files
-        run: flutter create --platforms=android .
+      - name: Recreate Android platform files from scratch
+        run: |
+          rm -rf android
+          flutter create --platforms=android .
         working-directory: flutter_app
+
+      - name: Apply Premium App Icon
+        run: |
+          cp web_simulator/icon-512.png flutter_app/android/app/src/main/res/mipmap-mdpi/ic_launcher.png
+          cp web_simulator/icon-512.png flutter_app/android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+          cp web_simulator/icon-512.png flutter_app/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+          cp web_simulator/icon-512.png flutter_app/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+          cp web_simulator/icon-512.png flutter_app/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
 
       - name: Install dependencies
         run: flutter pub get
